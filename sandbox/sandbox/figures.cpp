@@ -3,8 +3,6 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-//template <typename T>
-
 class Figure {
 public:
 	double area;
