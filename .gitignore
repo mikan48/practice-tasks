@@ -46,3 +46,8 @@ bld/
 
 # Visual Studio 2015 cache/options directory
 .vs/
+
+#directories
+sandbox/.vs/*
+sandbox/x64/*
+sandbox/sandbox/x64/*

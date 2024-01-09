@@ -8,10 +8,9 @@ public:
 	double area;
 
 	virtual double GetArea() {
-		//std::cout << area << std::endl;
 		return area;
 	};
-	virtual void CalcArea() {}
+	virtual void CalcArea() = 0;
 };
 
 class Rectangle : public Figure {
