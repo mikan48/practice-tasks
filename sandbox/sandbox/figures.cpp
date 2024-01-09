@@ -1,96 +1,106 @@
+#include "figures.h"
+
 #include <iostream>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-class Figure {
-public:
-	double area;
+namespace Figures {
 
-	virtual double GetArea() {
-		return area;
-	};
-	virtual void CalcArea() = 0;
+class Figure {
+protected:
+    double m_area;
+
+public:
+    virtual double GetArea()
+    {
+        return m_area;
+    };
+    virtual void CalcArea() = 0;
 };
 
 class Rectangle : public Figure {
 private:
-	double h;
-	double a;
+    double m_h;
+    double m_a;
 
 public:
-	double GetHigh() {
-		return h;
-	}
+    double GetHigh()
+    {
+        return m_h;
+    }
 
-	double GetSide() {
-		return a;
-	}
+    double GetSide()
+    {
+        return m_a;
+    }
 
-	void SetHight(double h) {
-		this->h = h;
-	}
+    void SetHight(double h)
+    {
+        m_h = h;
+    }
 
-	void SetSide(double a) {
-		this->a = a;
-	}
+    void SetSide(double a)
+    {
+        m_a = a;
+    }
 
-	/*void SetParams(double h, double a) {
-		this->a = a;
-		this->h = h;
-	}*/
-
-	void CalcArea() override {
-		this->area = h * a;
-	}
+    void CalcArea() override
+    {
+        m_area = m_h * m_a;
+    }
 };
 
 class Circle : public Figure {
 private:
-	double r;
-	
+    double m_r;
+
 public:
-	void SetRadius(double r) {
-		this->r = r;
-	}
+    void SetRadius(double r)
+    {
+        m_r = r;
+    }
 
-	double GetRadius() {
-		return r;
-	}
+    double GetRadius()
+    {
+        return m_r;
+    }
 
-	void CalcArea() override {
-		this->area = pow(r, 2) * M_PI;
-	}
+    void CalcArea() override
+    {
+        m_area = pow(m_r, 2) * M_PI;
+    }
 };
 
 class Triangle : public Figure {
 private:
-	double h;
-	double a;
+    double m_h;
+    double m_a;
 
 public:
-	double GetHigh() {
-		return h;
-	}
+    double GetHigh()
+    {
+        return m_h;
+    }
 
-	double GetSide() {
-		return a;
-	}
+    double GetSide()
+    {
+        return m_a;
+    }
 
-	void SetHight(double h) {
-		this->h = h;
-	}
+    void SetHight(double h)
+    {
+        m_h = h;
+    }
 
-	void SetSide(double a) {
-		this->a = a;
-	}
+    void SetSide(double a)
+    {
+        m_a = a;
+    }
 
-
-	void CalcArea() override {
-		this->area = h * a / 2;
-	}
-
-	/*void foo() {
-		std::cout << "foo" << std::endl;
-	}*/
+    void CalcArea() override
+    {
+        m_area = m_h * m_a / 2;
+    }
 };
+}

@@ -1,10 +1,9 @@
 #include <iostream>
-#include "figures.cpp"
+#include "figures.h"
 
-void WrongInput(double& number) {
-
-	while (std::cin.fail())
-	{
+void WaitingForCorrectInput(double& number) 
+{
+	while (std::cin.fail()) {
 		std::cin.clear();
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -14,7 +13,8 @@ void WrongInput(double& number) {
 	}
 }
 
-int main() {
+int main() 
+{
 	Triangle triangle;
 	Rectangle rectangle;
 	Circle circle;
@@ -24,7 +24,7 @@ int main() {
 	std::cout << "Input circle radius:\n";
 	std::cin >> numb;
 
-	WrongInput(numb);
+	WaitingForCorrectInput(numb);
 
 	circle.SetRadius(numb);
 	circle.CalcArea();
@@ -33,13 +33,13 @@ int main() {
 	std::cout << "Input rectangle height:\n";
 	std::cin >> numb;
 
-	WrongInput(numb);
+	WaitingForCorrectInput(numb);
 
 	rectangle.SetHight(numb);
 	std::cout << "Input rectangle side:\n";
 	std::cin >> numb;
 
-	WrongInput(numb);
+	WaitingForCorrectInput(numb);
 
 	rectangle.SetSide(numb);
 	rectangle.CalcArea();
@@ -48,22 +48,17 @@ int main() {
 	std::cout << "Input triangle height:\n";
 	std::cin >> numb;
 
-	WrongInput(numb);
+	WaitingForCorrectInput(numb);
 
 	triangle.SetHight(numb);
 
 	std::cout << "Input triangle side:\n";
 	std::cin >> numb;
 
-	WrongInput(numb);
+	WaitingForCorrectInput(numb);
 
 	triangle.SetSide(numb);
 	triangle.CalcArea();
 	std::cout << "Triangle area:\n" << triangle.GetArea() << std::endl;
-
-	//std::cout << numb << std::endl;
-
-	//Triangle t;
-	//t.GetArea();
 }
 

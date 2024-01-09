@@ -48,6 +48,8 @@ bld/
 .vs/
 
 #directories
+.vs/*
+x64/*
 sandbox/.vs/*
 sandbox/x64/*
 sandbox/sandbox/x64/*
