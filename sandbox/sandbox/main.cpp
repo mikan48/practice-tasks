@@ -43,7 +43,7 @@ int main()
 
 	rectangle.SetSide(numb);
 	rectangle.CalcArea();
-	std::cout << "Rectangle area:\n" << triangle.GetArea() << std::endl;
+	std::cout << "Rectangle area:\n" << rectangle.GetArea() << std::endl;
 
 	std::cout << "Input triangle height:\n";
 	std::cin >> numb;
