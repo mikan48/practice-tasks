@@ -21,6 +21,9 @@
     <ClCompile Include="figures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="figuresContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="figures.h">
