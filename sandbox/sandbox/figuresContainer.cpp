@@ -1,36 +1,43 @@
+#include "figures.h"
 #include <iostream>
+#include <string>
 
-//
+namespace Container {
 
-template <class T>
 class FiguresContainer {
 private:
-	const double m_size;
-	FiguresContainer object1;
-	FiguresContainer object2;
+	int m_maxSize = 0;
+	
+	Figures::Figure* m_figures/*[4] = {nullptr}*/ = nullptr;
+
+	//using Figures = Figures::Figure*;
+
 public:
-	FiguresContainer(int elements) : m_size(elements*sizeof(T)) {}
-	FiguresContainer(const FiguresContainer& container) : m_size(container.m_size) {}
-
-	T& operator=(const T& other)
-    {
-        if (this != &other) 
-        {
-            if (size != other.size) 
-            {
-                data.reset(new int[other.size]);
-                size = other.size;
-            }
-            std::copy(&other.data[0], &other.data[0] + size, &data[0]);
-        }
-        return *this;
+	FiguresContainer(int size) : m_maxSize(size) 
+	{
+		
 	}
+	FiguresContainer(int size, Figures::Figure* figures) : m_maxSize(size)//, m_figures(figures) 
+	{
+		//Figures* figures = new Figures[size];
 
-    /*void AddFigure(const T& item) {}
-    void DeleteFigure(const T& item) {}
-    double GetSumArea() {}
+		//m_figures = new Figures::Figure[size];
+		//m_figures = figures;
 
-    ~FiguresContainer() {}*/
+		for (int i = 0; i < size; i++) {
+			//figures[i] = new Figures();
+			/**m_figures[i] = figures[i];
+			m_figures[i]->CalcArea();*/
+			std::cout << m_figures[i].GetArea() << std::endl;
+		}
+	}
+	/*FiguresContainer(const FiguresContainer& container) : m_size(container.m_size) 
+	{
+	}*/
+
+	/*void AddFigures(Figures::Figure* figures) {
+		
+	}*/
 };
 
-//class It {};
+}

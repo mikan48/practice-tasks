@@ -1,5 +1,6 @@
 #include <iostream>
 #include "figures.h"
+#include "figuresContainer.cpp"
 
 void WaitingForCorrectInput(double& number) 
 {
@@ -13,11 +14,11 @@ void WaitingForCorrectInput(double& number)
 	}
 }
 
-int main() 
+void FiguresFeaturesTest() 
 {
-	Triangle triangle;
-	Rectangle rectangle;
-	Circle circle;
+	Figures::Triangle triangle;
+	Figures::Rectangle rectangle;
+	Figures::Circle circle;
 
 	double numb = 0;
 
@@ -60,5 +61,14 @@ int main()
 	triangle.SetSide(numb);
 	triangle.CalcArea();
 	std::cout << "Triangle area:\n" << triangle.GetArea() << std::endl;
+}
+
+int main() 
+{
+	//FiguresFeaturesTest();
+
+	Figures::Circle circlices[3] = {Figures::Circle(1), Figures::Circle(2), Figures::Circle(8)} ;
+
+	Container::FiguresContainer(3, circlices);
 }
 

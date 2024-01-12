@@ -32,7 +32,7 @@ void Rectangle::SetSide(double a)
     m_a = a;
 }
 
-void Rectangle::CalcArea() //override
+void Rectangle::CalcArea() 
 {
     m_area = m_h * m_a;
 }
@@ -47,7 +47,7 @@ void Circle::SetRadius(double r)
         return m_r;
     }
 
-    void Circle::CalcArea() //override
+    void Circle::CalcArea() 
     {
         m_area = pow(m_r, 2) * M_PI;
     }
@@ -72,7 +72,7 @@ double Triangle::GetHigh()
         m_a = a;
     }
 
-    void Triangle::CalcArea() //override
+    void Triangle::CalcArea() 
     {
         m_area = m_h * m_a / 2;
     }

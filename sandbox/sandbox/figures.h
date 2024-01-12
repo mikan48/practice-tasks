@@ -20,6 +20,7 @@ private:
     double m_a = 0;
 
 public:
+    Rectangle() = default;
     Rectangle(double high, double side)
         : m_h(high)
         , m_a(side)
@@ -31,7 +32,7 @@ public:
     {
     }
 
-    virtual void CalcArea();
+    virtual void CalcArea() override;
 
     double GetHigh();
     double GetSide();
@@ -44,6 +45,7 @@ private:
     double m_r = 0;
 
 public:
+    Circle() = default;
     Circle(double radius)
         : m_r(radius)
     {
@@ -53,7 +55,7 @@ public:
     {
     }
 
-    virtual void CalcArea();
+    virtual void CalcArea() override;
 
     void SetRadius(double r);
     double GetRadius();
@@ -65,6 +67,7 @@ private:
     double m_a = 0;
 
 public:
+    Triangle() = default;
     Triangle(double high, double side)
         : m_h(high)
         , m_a(side)
@@ -76,7 +79,7 @@ public:
     {
     }
 
-    virtual void CalcArea();
+    virtual void CalcArea() override;
 
     double GetHigh();
     double GetSide();
