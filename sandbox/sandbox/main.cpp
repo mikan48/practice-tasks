@@ -62,21 +62,34 @@ void FiguresFeaturesTest()
 	std::cout << "Triangle area:\n" << triangle.GetArea() << std::endl;
 }
 
+bool AreaIsZero(Figures::Figure* figure)
+{
+    if (figure->GetArea() == 0) {
+        std::cout << "Area is equal zero" << std::endl;
+
+        return true;
+    } else {
+        std::cout << "Area = " << figure->GetArea() << std::endl;
+
+        return false;
+    }
+}
+
 int main() 
 {
 	//FiguresFeaturesTest();
 
-	/*Figures::Circle circle(2);
+	Figures::Circle circle(2);
 	circle.CalcArea();
-	circle.AreaIsZero();*/
+	AreaIsZero(&circle);
 
-	int numb = 5;
+	/*int numb = 5;
 
 	Figures::Figure** figures = new Figures::Figure*[numb];
 
 	for(int i = 0; i < numb; ++i) {
 		std::cout << figures[i]->AreaIsZero() << std::endl;
-	}
+	}*/
 
 	/*auto figures2 = std::make_unique<Figures::Figure[]>(new Figures::Figure[numb]);
 	for(int i = 0; i < numb; i++) {

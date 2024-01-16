@@ -12,17 +12,6 @@ double Figure::GetArea()
     return m_area;
 }
 
-bool Figure::AreaIsZero()
-{
-    if (m_area == 0) {
-        std::cout << "Area is equal zero" << std::endl;
-        return 1;
-    } else {
-        std::cout << "Area = " << m_area << std::endl;
-        return 0;
-    }
-}
-
 double Rectangle::GetHigh()
 {
     return m_h;

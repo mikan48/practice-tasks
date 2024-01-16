@@ -10,7 +10,6 @@ protected:
 public:
     virtual double GetArea();
     virtual void CalcArea() = 0;
-    virtual bool AreaIsZero();
     virtual ~Figure() {};
 };
 
