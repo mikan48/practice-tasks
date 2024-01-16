@@ -80,20 +80,7 @@ int main()
 	//FiguresFeaturesTest();
 
 	Figures::Circle* circle = new Figures::Circle(2);
-	circle->CalcArea();
 	AreaIsZero(circle);
 
-	/*int numb = 5;
-
-	Figures::Figure** figures = new Figures::Figure*[numb];
-
-	for(int i = 0; i < numb; ++i) {
-		std::cout << figures[i]->AreaIsZero() << std::endl;
-	}*/
-
-	/*auto figures2 = std::make_unique<Figures::Figure[]>(new Figures::Figure[numb]);
-	for(int i = 0; i < numb; i++) {
-		std::cout << figures2[i].get() << std::endl;
-	}*/
 }
 

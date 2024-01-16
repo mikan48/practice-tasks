@@ -26,5 +26,8 @@
     <ClInclude Include="figures.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="containers.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -20,11 +20,7 @@ private:
 
 public:
     Rectangle() = default;
-    Rectangle(double high, double side)
-        : m_h(high)
-        , m_a(side)
-    {
-    }
+    Rectangle(double high, double side);
     Rectangle(const Rectangle& rectangle)
         : m_h(rectangle.m_h)
         , m_a(rectangle.m_a)
@@ -45,10 +41,7 @@ private:
 
 public:
     Circle() = default;
-    Circle(double radius)
-        : m_r(radius)
-    {
-    }
+    Circle(double radius);
     Circle(const Circle& circle)
         : m_r(circle.m_r)
     {
@@ -67,11 +60,7 @@ private:
 
 public:
     Triangle() = default;
-    Triangle(double high, double side)
-        : m_h(high)
-        , m_a(side)
-    {
-    }
+    Triangle(double high, double side);
     Triangle(const Triangle& triangle)
         : m_h(triangle.m_h)
         , m_a(triangle.m_a)

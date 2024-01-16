@@ -12,6 +12,13 @@ double Figure::GetArea()
     return m_area;
 }
 
+Rectangle::Rectangle(double high, double side)
+    : m_h(high)
+    , m_a(side)
+{
+    CalcArea();
+}
+
 double Rectangle::GetHigh()
 {
     return m_h;
@@ -37,6 +44,12 @@ void Rectangle::CalcArea()
     m_area = m_h * m_a;
 }
 
+Circle::Circle(double radius)
+    : m_r(radius)
+{
+    CalcArea();
+}
+
 void Circle::SetRadius(double r)
 {
     m_r = r;
@@ -52,6 +65,13 @@ double Circle::GetRadius()
 void Circle::CalcArea()
 {
     m_area = pow(m_r, 2) * M_PI;
+}
+
+Triangle::Triangle(double high, double side)
+    : m_h(high)
+    , m_a(side)
+{
+    CalcArea();
 }
 
 double Triangle::GetHigh()
