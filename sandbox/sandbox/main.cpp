@@ -78,9 +78,9 @@ int main()
 		std::cout << figures[i]->AreaIsZero() << std::endl;
 	}
 
-	auto figures2 = std::make_unique<Figures::Figure[]>(new Figures::Figure[numb]);
+	/*auto figures2 = std::make_unique<Figures::Figure[]>(new Figures::Figure[numb]);
 	for(int i = 0; i < numb; i++) {
 		std::cout << figures2[i].get() << std::endl;
-	}
+	}*/
 }
 
