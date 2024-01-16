@@ -62,3 +62,11 @@ sandbox/sandbox/x64/*
 
 .vs/
 x64/
+sandbox/.vs/
+sandbox/x64/
+sandbox/sandbox/x64/
+/.vs/
+/x64/
+/sandbox/.vs/
+/sandbox/x64/
+/sandbox/sandbox/x64/
