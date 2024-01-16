@@ -79,9 +79,9 @@ int main()
 {
 	//FiguresFeaturesTest();
 
-	Figures::Circle circle(2);
-	circle.CalcArea();
-	AreaIsZero(&circle);
+	Figures::Circle* circle = new Figures::Circle(2);
+	circle->CalcArea();
+	AreaIsZero(circle);
 
 	/*int numb = 5;
 
