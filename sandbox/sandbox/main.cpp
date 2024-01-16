@@ -1,6 +1,5 @@
 #include <iostream>
 #include "figures.h"
-#include "figuresContainer.cpp"
 
 void WaitingForCorrectInput(double& number) 
 {
@@ -67,8 +66,21 @@ int main()
 {
 	//FiguresFeaturesTest();
 
-	Figures::Circle circlices[3] = {Figures::Circle(1), Figures::Circle(2), Figures::Circle(8)} ;
+	/*Figures::Circle circle(2);
+	circle.CalcArea();
+	circle.AreaIsZero();*/
 
-	Container::FiguresContainer(3, circlices);
+	int numb = 5;
+
+	Figures::Figure** figures = new Figures::Figure*[numb];
+
+	for(int i = 0; i < numb; ++i) {
+		std::cout << figures[i]->AreaIsZero() << std::endl;
+	}
+
+	auto figures2 = std::make_unique<Figures::Figure[]>(new Figures::Figure[numb]);
+	for(int i = 0; i < numb; i++) {
+		std::cout << figures2[i].get() << std::endl;
+	}
 }
 

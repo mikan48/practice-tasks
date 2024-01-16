@@ -12,6 +12,17 @@ double Figure::GetArea()
     return m_area;
 }
 
+bool Figure::AreaIsZero()
+{
+    if (m_area == 0) {
+        std::cout << "Area is equal zero" << std::endl;
+        return 1;
+    } else {
+        std::cout << "Area = " << m_area << std::endl;
+        return 0;
+    }
+}
+
 double Rectangle::GetHigh()
 {
     return m_h;
@@ -32,49 +43,51 @@ void Rectangle::SetSide(double a)
     m_a = a;
 }
 
-void Rectangle::CalcArea() 
+void Rectangle::CalcArea()
 {
     m_area = m_h * m_a;
 }
 
 void Circle::SetRadius(double r)
-    {
-        m_r = r;
-    }
+{
+    m_r = r;
 
-    double Circle::GetRadius()
-    {
-        return m_r;
-    }
+    CalcArea();
+}
 
-    void Circle::CalcArea() 
-    {
-        m_area = pow(m_r, 2) * M_PI;
-    }
+double Circle::GetRadius()
+{
+    return m_r;
+}
+
+void Circle::CalcArea()
+{
+    m_area = pow(m_r, 2) * M_PI;
+}
 
 double Triangle::GetHigh()
-    {
-        return m_h;
-    }
+{
+    return m_h;
+}
 
-    double Triangle::GetSide()
-    {
-        return m_a;
-    }
+double Triangle::GetSide()
+{
+    return m_a;
+}
 
-    void Triangle::SetHight(double h)
-    {
-        m_h = h;
-    }
+void Triangle::SetHight(double h)
+{
+    m_h = h;
+}
 
-    void Triangle::SetSide(double a)
-    {
-        m_a = a;
-    }
+void Triangle::SetSide(double a)
+{
+    m_a = a;
+}
 
-    void Triangle::CalcArea() 
-    {
-        m_area = m_h * m_a / 2;
-    }
+void Triangle::CalcArea()
+{
+    m_area = m_h * m_a / 2;
+}
 
 }
