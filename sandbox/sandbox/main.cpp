@@ -93,6 +93,7 @@ int main()
 
 	Containers::CircleContainer* circlesContainer = new Containers::CircleContainer(3, circles);
 	circlesContainer->GetItems();
+	std::cout << std::endl;
 	circlesContainer->AddFigure(Figures::Circle(1));
 	circlesContainer->GetItems();
 	std::cout << "Sum area: " << circlesContainer->GetFiguresSumArea() << std::endl; 

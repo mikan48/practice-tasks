@@ -17,9 +17,18 @@ CircleContainer::CircleContainer(int size, Figures::Circle* circles)
 
 void CircleContainer::AddFigure(Figures::Circle item)
 {
-    m_items[m_size] = item;
+    Figures::Circle* circles = new Figures::Circle[m_size + 1];
 
+    for (int i = 0; i < m_size; ++i) {
+        circles[i] = m_items[i];
+    }
+    circles[m_size] = item;
     ++m_size;
+    m_items = circles;
+
+   /* m_items[m_size] = item;
+
+    ++m_size;*/
 }
 
 Figures::Circle* CircleContainer::GetItems()
