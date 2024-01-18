@@ -1,5 +1,6 @@
 #include <iostream>
 #include "figures.h"
+#include "containers.h"
 
 void WaitingForCorrectInput(double& number) 
 {
@@ -81,6 +82,25 @@ int main()
 
 	Figures::Circle* circle = new Figures::Circle(2);
 	AreaIsZero(circle);
+	std::cout << std::endl;
 
+	Figures::Circle* circles = new Figures::Circle[3] { Figures::Circle(1), Figures::Circle(5), Figures::Circle(11) };
+	for (int i = 0; i < 3; ++i) {
+		AreaIsZero(&circles[i]);
+	}
+
+	std::cout << std::endl << std::endl << std::endl;
+
+	Containers::CircleContainer* circlesContainer = new Containers::CircleContainer(3, circles);
+	circlesContainer->GetItems();
+	circlesContainer->AddFigure(Figures::Circle(1));
+	circlesContainer->GetItems();
+	std::cout << "Sum area: " << circlesContainer->GetFiguresSumArea() << std::endl; 
+
+	/*std::cout << std::endl << std::endl << std::endl;
+
+	Containers::Container<Figures::Circle> container(3, circles);
+	container.GetItems();*/
+	
 }
 
