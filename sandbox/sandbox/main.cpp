@@ -92,11 +92,14 @@ int main()
 	std::cout << std::endl << std::endl << std::endl;
 
 	Containers::CircleContainer* circlesContainer = new Containers::CircleContainer(3, circles);
-	circlesContainer->GetItems();
+	circlesContainer->PrintCircles();
 	std::cout << std::endl;
 	circlesContainer->AddFigure(Figures::Circle(1));
-	circlesContainer->GetItems();
-	std::cout << "Sum area: " << circlesContainer->GetFiguresSumArea() << std::endl; 
+	circlesContainer->PrintCircles();
+	std::cout << "Sum area: " << circlesContainer->GetFiguresSumArea() << std::endl;
+	std::cout << std::endl;
+	circlesContainer->DeleteFigure(&circlesContainer->GetItems()[1]);
+	circlesContainer->PrintCircles();
 
 	/*std::cout << std::endl << std::endl << std::endl;
 

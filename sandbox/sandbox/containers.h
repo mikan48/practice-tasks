@@ -22,7 +22,8 @@ public:
 
     double GetFiguresSumArea();
 
-    //void DeleteFigure(Figures::Circle* item);
+    void DeleteFigure(Figures::Circle* item);
+    void PrintCircles();
 };
 
 
