@@ -26,12 +26,12 @@ public:
     void PrintCircles();
 };
 
-
 template <class T>
 class Container {
 private:
     T* m_items;
     int m_size = 0;
+
 public:
     Container(int size)
         : m_size(size)
@@ -46,35 +46,79 @@ public:
 
     T* GetItems()
     {
-        for (int i = 0; i < m_size; ++i) {
-            std::cout << m_items[i].GetArea() << std::endl;
-        }
-
         return m_items;
     }
 
-   /* void AddFigure(T* item);
-    void DeleteFigure(T* item);
-    double GetFiguresSumArea();*/
+    void AddFigure(T item)
+    {
+        T* items = new T[m_size + 1];
+
+        for (int i = 0; i < m_size; ++i) {
+            items[i] = m_items[i];
+        }
+        items[m_size] = item;
+
+        ++m_size;
+        m_items = items;
+    }
+
+    void DeleteFigure(T* item)
+    {
+        T* items = new T[m_size - 1];
+        bool IsDeleted = false;
+        int k = 0;
+
+        for (int i = 0; i < m_size; ++i) {
+            if (&m_items[i] != item) {
+                items[k] = m_items[i];
+                ++k;
+            } else {
+                IsDeleted = true;
+            }
+        }
+
+        if (IsDeleted) {
+            --m_size;
+            m_items = items;
+        }
+    }
+
+    double GetFiguresSumArea()
+    {
+        double area = 0;
+
+        for (int i = 0; i < m_size; ++i) {
+            area += m_items[i].GetArea();
+        }
+
+        return area;
+    }
+
+    void PrintItems()
+    {
+        for (int i = 0; i < m_size; ++i) {
+            std::cout << m_items[i].GetArea() << std::endl;
+        }
+    }
 };
 
-//class TriangleContainer {
-//public:
-//    TriangleContainer();
-//    ~TriangleContainer();
+// class TriangleContainer {
+// public:
+//     TriangleContainer();
+//     ~TriangleContainer();
 //
-//private:
-//    Figures::Triangle triangles;
-//};
+// private:
+//     Figures::Triangle triangles;
+// };
 //
-//class RectangleContainer {
-//public:
-//    RectangleContainer();
-//    ~RectangleContainer();
+// class RectangleContainer {
+// public:
+//     RectangleContainer();
+//     ~RectangleContainer();
 //
-//private:
-//    Figures::Rectangle rectangles;
-//};
+// private:
+//     Figures::Rectangle rectangles;
+// };
 
 }
 

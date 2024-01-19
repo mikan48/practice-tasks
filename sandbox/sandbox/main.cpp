@@ -101,10 +101,19 @@ int main()
 	circlesContainer->DeleteFigure(&circlesContainer->GetItems()[1]);
 	circlesContainer->PrintCircles();
 
-	/*std::cout << std::endl << std::endl << std::endl;
-
-	Containers::Container<Figures::Circle> container(3, circles);
-	container.GetItems();*/
+	std::cout << std::endl << std::endl << std::endl;
 	
+	//template
+	Containers::Container<Figures::Circle> container(3, circles);
+	container.AddFigure(Figures::Circle(1));
+	container.PrintItems();
+	std::cout << "Sum area: " << container.GetFiguresSumArea() << std::endl;
+	container.DeleteFigure(&container.GetItems()[1]);
+	container.PrintItems();
+
+	std::cout << std::endl << "Triangles"  << std::endl;
+	Containers::Container<Figures::Triangle> trianglesContainer(2, new Figures::Triangle[2] { Figures::Triangle(1, 1), Figures::Triangle(5, 4) });
+	trianglesContainer.PrintItems();
+	std::cout << "Sum area: " << trianglesContainer.GetFiguresSumArea() << std::endl;
 }
 
