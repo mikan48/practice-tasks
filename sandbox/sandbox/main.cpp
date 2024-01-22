@@ -91,6 +91,7 @@ int main()
 
 	std::cout << std::endl << std::endl << std::endl;
 
+	//circle container
 	Containers::CircleContainer* circlesContainer = new Containers::CircleContainer(3, circles);
 	circlesContainer->PrintCircles();
 	std::cout << std::endl;
@@ -115,5 +116,9 @@ int main()
 	Containers::Container<Figures::Triangle> trianglesContainer(2, new Figures::Triangle[2] { Figures::Triangle(1, 1), Figures::Triangle(5, 4) });
 	trianglesContainer.PrintItems();
 	std::cout << "Sum area: " << trianglesContainer.GetFiguresSumArea() << std::endl;
+
+	delete circle;
+	delete[] circles;
+	delete circlesContainer;
 }
 

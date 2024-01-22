@@ -24,6 +24,8 @@ public:
 
     void DeleteFigure(Figures::Circle* item);
     void PrintCircles();
+
+    ~CircleContainer();
 };
 
 template <class T>
@@ -44,6 +46,11 @@ public:
     {
     }
 
+    ~Container() 
+    {
+        delete m_items;
+    }
+
     T* GetItems()
     {
         return m_items;
@@ -60,6 +67,8 @@ public:
 
         ++m_size;
         m_items = items;
+
+        delete[] items;
     }
 
     void DeleteFigure(T* item)
@@ -81,6 +90,8 @@ public:
             --m_size;
             m_items = items;
         }
+
+        delete[] items;
     }
 
     double GetFiguresSumArea()
@@ -102,23 +113,6 @@ public:
     }
 };
 
-// class TriangleContainer {
-// public:
-//     TriangleContainer();
-//     ~TriangleContainer();
-//
-// private:
-//     Figures::Triangle triangles;
-// };
-//
-// class RectangleContainer {
-// public:
-//     RectangleContainer();
-//     ~RectangleContainer();
-//
-// private:
-//     Figures::Rectangle rectangles;
-// };
 
 }
 
