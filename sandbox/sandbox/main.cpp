@@ -118,7 +118,7 @@ int main()
 	std::cout << "Sum area: " << trianglesContainer.GetFiguresSumArea() << std::endl;
 
 	delete circle;
-	delete[] circles;
-	delete circlesContainer;
+
+	return 0;
 }
 
