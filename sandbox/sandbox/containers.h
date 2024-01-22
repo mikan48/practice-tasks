@@ -48,7 +48,7 @@ public:
 
     ~Container() 
     {
-        delete m_items;
+        delete[] m_items;
     }
 
     T* GetItems()
@@ -66,9 +66,9 @@ public:
         items[m_size] = item;
 
         ++m_size;
+        delete[] m_items;
         m_items = items;
-
-        delete[] items;
+        
     }
 
     void DeleteFigure(T* item)
@@ -88,10 +88,13 @@ public:
 
         if (IsDeleted) {
             --m_size;
+            delete[] m_items;
             m_items = items;
+        } else {
+            delete[] items;
         }
 
-        delete[] items;
+        
     }
 
     double GetFiguresSumArea()

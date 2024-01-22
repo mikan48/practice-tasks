@@ -17,7 +17,7 @@ CircleContainer::CircleContainer(int size, Figures::Circle* circles)
 
 CircleContainer::~CircleContainer() 
 {
-    delete m_items;
+    delete[] m_items;
 }
 
 void CircleContainer::AddFigure(Figures::Circle item)
@@ -29,9 +29,8 @@ void CircleContainer::AddFigure(Figures::Circle item)
     }
     circles[m_size] = item;
     ++m_size;
+    delete[] m_items;
     m_items = circles;
-
-    delete[] circles;
 }
 
 Figures::Circle* CircleContainer::GetItems()
@@ -67,10 +66,11 @@ void CircleContainer::DeleteFigure(Figures::Circle* item)
 
     if(IsDeleted) {
         --m_size;
+        delete[] m_items;
         m_items = circles;    
+    } else {
+        delete[] circles;
     }
-
-    delete[] circles;
 }
 
 void CircleContainer::PrintCircles()
