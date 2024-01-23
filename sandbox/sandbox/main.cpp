@@ -105,7 +105,7 @@ int main()
 	std::cout << std::endl << std::endl << std::endl;
 	
 	//template
-	Containers::Container<Figures::Circle> container(3, circles);
+	Containers::Container<Figures::Circle> container(3, new Figures::Circle[3] { Figures::Circle(1), Figures::Circle(5), Figures::Circle(11) });
 	container.AddFigure(Figures::Circle(1));
 	container.PrintItems();
 	std::cout << "Sum area: " << container.GetFiguresSumArea() << std::endl;
@@ -118,6 +118,7 @@ int main()
 	std::cout << "Sum area: " << trianglesContainer.GetFiguresSumArea() << std::endl;
 
 	delete circle;
+	delete circlesContainer;
 
 	return 0;
 }
