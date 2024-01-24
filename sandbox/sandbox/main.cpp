@@ -76,10 +76,8 @@ bool AreaIsZero(Figures::Figure* figure)
     }
 }
 
-int main() 
+void ContainersAndFunctionTest() 
 {
-	//FiguresFeaturesTest();
-
 	Figures::Circle* circle = new Figures::Circle(2);
 	AreaIsZero(circle);
 	std::cout << std::endl;
@@ -119,6 +117,13 @@ int main()
 
 	delete circle;
 	delete circlesContainer;
+}
+
+int main() 
+{
+	//FiguresFeaturesTest();
+
+	ContainersAndFunctionTest();
 
 	return 0;
 }

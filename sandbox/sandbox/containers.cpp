@@ -52,7 +52,7 @@ double CircleContainer::GetFiguresSumArea()
 void CircleContainer::DeleteFigure(Figures::Circle* item) 
 {
     Figures::Circle* circles = new Figures::Circle[m_size - 1];
-    bool IsDeleted = false;
+    bool isDeleted = false;
     int k = 0;
 
     for (int i = 0; i < m_size; ++i) {
@@ -60,11 +60,11 @@ void CircleContainer::DeleteFigure(Figures::Circle* item)
             circles[k] = m_items[i];
             ++k;
         } else {
-            IsDeleted = true;
+            isDeleted = true;
         }
     }
 
-    if(IsDeleted) {
+    if(isDeleted) {
         --m_size;
         delete[] m_items;
         m_items = circles;    

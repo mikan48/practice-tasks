@@ -74,7 +74,7 @@ public:
     void DeleteFigure(T* item)
     {
         T* items = new T[m_size - 1];
-        bool IsDeleted = false;
+        bool isDeleted = false;
         int k = 0;
 
         for (int i = 0; i < m_size; ++i) {
@@ -82,11 +82,11 @@ public:
                 items[k] = m_items[i];
                 ++k;
             } else {
-                IsDeleted = true;
+                isDeleted = true;
             }
         }
 
-        if (IsDeleted) {
+        if (isDeleted) {
             --m_size;
             delete[] m_items;
             m_items = items;
