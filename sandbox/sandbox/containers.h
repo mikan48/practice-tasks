@@ -1,5 +1,4 @@
-#ifndef CONTAINERS_H
-#define CONTAINERS_H
+#pragma once
 
 #include "figures.h"
 
@@ -117,5 +116,3 @@ public:
 
 
 }
-
-#endif

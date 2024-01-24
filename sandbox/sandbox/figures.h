@@ -1,5 +1,4 @@
-#ifndef FIGURES_H
-#define FIGURES_H
+#pragma once
 
 namespace Figures {
 
@@ -76,4 +75,3 @@ public:
 };
 }
 
-#endif
