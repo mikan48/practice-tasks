@@ -32,5 +32,8 @@
     <ClInclude Include="containers.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="vector.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

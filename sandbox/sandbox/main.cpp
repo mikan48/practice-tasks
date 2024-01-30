@@ -1,6 +1,7 @@
 #include <iostream>
 #include "figures.h"
 #include "containers.h"
+#include "vector.h"
 
 void WaitingForCorrectInput(double& number) 
 {
@@ -122,8 +123,12 @@ void ContainersAndFunctionTest()
 int main() 
 {
 	//FiguresFeaturesTest();
+	//ContainersAndFunctionTest();
 
-	ContainersAndFunctionTest();
+	//Figures::Circle* circles = new Figures::Circle[3] { Figures::Circle(1), Figures::Circle(5), Figures::Circle(11) };
+	Core::Vector<Figures::Circle> vector;
+	std::cout << vector.Empty() << std::endl;
+
 
 	return 0;
 }
