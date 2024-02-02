@@ -9,13 +9,14 @@ private:
     T* m_begin = nullptr;
     T* m_end = nullptr;
     int m_size = 0;
+    int m_capacity = 0;
     // int max_size = 0;
 
 public:
     Vector(T* items, int size)
         : m_items(items)
         , m_begin(&items[0])
-        , m_end(&items[m_size - 1])
+        , m_end(&items[m_size])
         , m_size(size)
     {
     }
@@ -33,28 +34,28 @@ public:
         delete[] m_items;
     }
 
-    T* Front()
+    T& Front()
     {
         return m_begin;
     }
 
-    T* Front() const
+    T& Front() const
     {
         return m_begin;
     }
 
-    T* Back()
+    T& Back()
     {
         return m_end;
     }
 
-    T* Back() const
+    T& Back() const
     {
         return m_end;
     }
 
     //???
-    T* Data()
+    T& Data()
     {
         return m_begin;
     }
@@ -78,6 +79,20 @@ public:
         m_size = 0;
     }
 
+    void PushBack(T value)
+    {
+        T* items = new T[m_size + 1];
+
+        for (int i = 0; i < m_size; ++i) {
+            items[i] = m_items[i];
+        }
+        items[m_size] = value;
+
+        ++m_size;
+        delete[] m_items;
+        m_items = items;
+    }
+
     // eh
     Iterator Begin()
     {
@@ -88,6 +103,8 @@ public:
     {
         return Iterator(&m_end);
     }
+
+    //for tests
 
     T* GetItems()
     {
@@ -114,23 +131,12 @@ public:
         return temp;
     }
 
-    Iterator Insert(Iterator pos, T& value)
-    {
-        Vector vec;
-
-        for(auto it = pos; it < End(); ++it) {
-            
-        }
-    }
-
-    Iterator InsertRange(Iterator pos, T&& range);
-
     // operator[]
 };
 
 template <class T>
 class Iterator {
-    using iterator_category = std::forward_iterator_tag;
+    using iterator_category = std::forward_iterator_tag; //contiguous_iterator_tag
     using difference_type = std::ptrdiff_t;
     using value_type = T;
     using pointer = T*;
@@ -173,5 +179,8 @@ public:
         return a.m_ptr != b.m_ptr; 
     };
 };
+
+//reverse iterator
+
 
 }
