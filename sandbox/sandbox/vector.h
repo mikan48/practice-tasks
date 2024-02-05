@@ -3,6 +3,80 @@
 namespace Core {
 
 template <class T>
+class Iterator {
+
+    using iterator_category = std::random_access_iterator_tag; // contiguous_iterator_tag
+    using difference_type = std::ptrdiff_t;
+    using value_type = T;
+    using pointer = T*;
+    using reference = T&;
+
+    pointer m_ptr;
+
+public:
+    Iterator(pointer ptr)
+        : m_ptr(ptr)
+    {
+    }
+
+    virtual ~Iterator()
+    {
+        delete m_ptr;
+    }
+
+    reference operator*() const
+    {
+        return *m_ptr;
+    }
+    pointer operator->()
+    {
+        return m_ptr;
+    }
+    virtual Iterator& operator++() override
+    {
+        m_ptr++;
+        return *this;
+    }
+    virtual Iterator operator++(int) override
+    {
+        Iterator tmp = *this;
+        ++(*this);
+        return tmp;
+    }
+
+    friend bool operator==(const Iterator& a, const Iterator& b)
+    {
+        return a.m_ptr == b.m_ptr;
+    };
+    friend bool operator!=(const Iterator& a, const Iterator& b)
+    {
+        return a.m_ptr != b.m_ptr;
+    };
+};
+
+// reverse iterator
+template <class T>
+class ReverseIterator : Iterator<T> {
+public:
+    ReverseIterator(Iterator<T>::pointer ptr)
+        : Iterator<T>::m_ptr(ptr)
+    {
+    }
+
+    virtual ReverseIterator& operator++() override
+    {
+        Iterator<T>::m_ptr--;
+        return *this;
+    }
+    virtual ReverseIterator operator++(int) override
+    {
+        ReverseIterator tmp = *this;
+        --(*this);
+        return tmp;
+    }
+};
+
+template <class T>
 class Vector {
 private:
     T* m_items = nullptr;
@@ -18,11 +92,13 @@ public:
         , m_begin(&items[0])
         , m_end(&items[m_size])
         , m_size(size)
+        , m_capacity(size)
     {
     }
 
     Vector(int size)
         : m_size(size)
+        , m_capacity(size)
     {
         m_items = new T[size];
     }
@@ -70,6 +146,11 @@ public:
         return m_size;
     }
 
+    int Capacity()
+    {
+        return m_capacity;
+    }
+
     void Clear()
     {
         delete[] m_items;
@@ -77,34 +158,39 @@ public:
         m_begin = nullptr;
         m_end = nullptr;
         m_size = 0;
+        m_capacity = 0;
     }
 
     void PushBack(T value)
     {
-        T* items = new T[m_size + 1];
+        if (m_size + 1 > m_capacity) {
+            m_capacity *= 2;
+            ++m_size;
+            T* items = new T[m_capacity];
 
-        for (int i = 0; i < m_size; ++i) {
-            items[i] = m_items[i];
-        }
-        items[m_size] = value;
+            for (int i = 0; i < m_size; ++i) {
+                items[i] = m_items[i];
+            }
 
-        ++m_size;
-        delete[] m_items;
-        m_items = items;
+            delete[] m_items;
+            m_items = items;
+        } 
+
+        m_items[m_size] = value;
     }
 
     // eh
-    Iterator Begin()
+    Iterator<T> Begin()
     {
         return Iterator(&m_begin);
     }
 
-    Iterator End()
+    Iterator<T> End()
     {
         return Iterator(&m_end);
     }
 
-    //for tests
+    // for tests
 
     T* GetItems()
     {
@@ -123,8 +209,8 @@ public:
     {
         T* temp = nullptr;
         for (int i = 0; i < m_size; ++i) {
-            if(&T[i] == T) {
-                temp = T[i] 
+            if (&T[i] == T) {
+                temp = T[i];
             }
         }
 
@@ -133,54 +219,5 @@ public:
 
     // operator[]
 };
-
-template <class T>
-class Iterator {
-    using iterator_category = std::forward_iterator_tag; //contiguous_iterator_tag
-    using difference_type = std::ptrdiff_t;
-    using value_type = T;
-    using pointer = T*;
-    using reference = T&;
-
-    pointer m_ptr;
-
-public:
-    Iterator(pointer ptr)
-        : m_ptr(ptr)
-    {
-    }
-
-    reference operator*() const
-    {
-        return *m_ptr;
-    }
-    pointer operator->()
-    {
-        return m_ptr;
-    }
-    Iterator& operator++()
-    {
-        m_ptr++;
-        return *this;
-    }
-    Iterator operator++(int)
-    {
-        Iterator tmp = *this;
-        ++(*this);
-        return tmp;
-    }
-
-    friend bool operator==(const Iterator& a, const Iterator& b) 
-    { 
-        return a.m_ptr == b.m_ptr; 
-    };
-    friend bool operator!=(const Iterator& a, const Iterator& b) 
-    { 
-        return a.m_ptr != b.m_ptr; 
-    };
-};
-
-//reverse iterator
-
 
 }
