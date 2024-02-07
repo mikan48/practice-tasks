@@ -3,90 +3,87 @@
 namespace Core {
 
 template <class T>
-class Iterator {
-
-    using iterator_category = std::random_access_iterator_tag; // contiguous_iterator_tag
-    using difference_type = std::ptrdiff_t;
-    using value_type = T;
-    using pointer = T*;
-    using reference = T&;
-
-    pointer m_ptr;
-
-public:
-    Iterator(pointer ptr)
-        : m_ptr(ptr)
-    {
-    }
-
-    virtual ~Iterator()
-    {
-        delete m_ptr;
-    }
-
-    reference operator*() const
-    {
-        return *m_ptr;
-    }
-    pointer operator->()
-    {
-        return m_ptr;
-    }
-    virtual Iterator& operator++() override
-    {
-        m_ptr++;
-        return *this;
-    }
-    virtual Iterator operator++(int) override
-    {
-        Iterator tmp = *this;
-        ++(*this);
-        return tmp;
-    }
-
-    friend bool operator==(const Iterator& a, const Iterator& b)
-    {
-        return a.m_ptr == b.m_ptr;
-    };
-    friend bool operator!=(const Iterator& a, const Iterator& b)
-    {
-        return a.m_ptr != b.m_ptr;
-    };
-};
-
-// reverse iterator
-template <class T>
-class ReverseIterator : Iterator<T> {
-public:
-    ReverseIterator(Iterator<T>::pointer ptr)
-        : Iterator<T>::m_ptr(ptr)
-    {
-    }
-
-    virtual ReverseIterator& operator++() override
-    {
-        Iterator<T>::m_ptr--;
-        return *this;
-    }
-    virtual ReverseIterator operator++(int) override
-    {
-        ReverseIterator tmp = *this;
-        --(*this);
-        return tmp;
-    }
-};
-
-template <class T>
 class Vector {
 private:
     T* m_items = nullptr;
-    T* m_begin = nullptr;
-    T* m_end = nullptr;
-    int m_size = 0;
-    int m_capacity = 0;
+    T& m_begin;
+    T& m_end;
+    size_t m_size = 0;
+    size_t m_capacity = 0;
     // int max_size = 0;
 
 public:
+    class Iterator {
+
+        using iterator_category = std::random_access_iterator_tag; // contiguous_iterator_tag
+        using difference_type = std::ptrdiff_t;
+        using value_type = T;
+        using pointer = T*;
+        using reference = T&;
+
+        pointer m_ptr;
+
+    public:
+        Iterator(pointer ptr)
+            : m_ptr(ptr)
+        {
+        }
+
+        virtual ~Iterator()
+        {
+            delete m_ptr;
+        }
+
+        reference operator*() const
+        {
+            return *m_ptr;
+        }
+        pointer operator->()
+        {
+            return m_ptr;
+        }
+        virtual Iterator& operator++()
+        {
+            m_ptr++;
+            return *this;
+        }
+        virtual Iterator operator++(int)
+        {
+            Iterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
+        friend bool operator==(const Iterator& a, const Iterator& b)
+        {
+            return a.m_ptr == b.m_ptr;
+        };
+        friend bool operator!=(const Iterator& a, const Iterator& b)
+        {
+            return a.m_ptr != b.m_ptr;
+        };
+    };
+
+    class ReverseIterator : Iterator {
+    public:
+        ReverseIterator(Iterator::pointer ptr)
+            : Iterator::m_ptr(ptr)
+        {
+        }
+
+        virtual ReverseIterator& operator++() override
+        {
+            Iterator::m_ptr--;
+            return *this;
+        }
+        virtual ReverseIterator operator++(int) override
+        {
+            ReverseIterator tmp = *this;
+            --(*this);
+            return tmp;
+        }
+    };
+
     Vector(T* items, int size)
         : m_items(items)
         , m_begin(&items[0])
@@ -130,8 +127,7 @@ public:
         return m_end;
     }
 
-    //???
-    T& Data()
+    T* Data()
     {
         return m_begin;
     }
@@ -155,43 +151,79 @@ public:
     {
         delete[] m_items;
         m_items = nullptr;
-        m_begin = nullptr;
-        m_end = nullptr;
         m_size = 0;
         m_capacity = 0;
     }
 
-    void PushBack(T value)
+    //to do
+    void PushBack(const T& value)
     {
         if (m_size + 1 > m_capacity) {
             m_capacity *= 2;
-            ++m_size;
             T* items = new T[m_capacity];
 
             for (int i = 0; i < m_size; ++i) {
                 items[i] = m_items[i];
             }
 
+            ++m_size;
             delete[] m_items;
             m_items = items;
-        } 
+        }
 
         m_items[m_size] = value;
     }
 
+    void Reserve(size_t n)
+    {
+        if(n <= m_capacity) return;
+        T* newItems = reinterpret_cast<T*>(new std::byte[n * sizeof(T)]);
+
+        size_t i = 0;
+        try {
+            for(; i < m_size; ++i) {
+                new (newItems + i) T(m_items[i]);
+            }
+        } catch() {
+            for (size_t j = 0; j < i; ++j) {
+                (m_items + i) -> ~T();
+            }
+            delete[] reinterpret_cast<std::byte*>(newItems);
+            throw;
+        }
+
+        for(size_t i = 0; i < m_size; ++i) {
+            m_items[i] -> ~T();
+        }
+
+        delete[] reinterpret_cast<std::byte*>(m_items);
+        m_items = newItems;
+        m_capacity = n;
+    }
+
+    void Resize(size_t n, const T& value = T())
+    {
+        if (n > m_capacity) Reserve(n);
+        for (size_t i = m_size; i < n; ++i) {
+            new (m_items + i) T(value);
+        }
+        if (n < m_size) {
+            m_size = n;
+        }
+    }
+
     // eh
-    Iterator<T> Begin()
+    Iterator Begin()
     {
         return Iterator(&m_begin);
     }
 
-    Iterator<T> End()
+    Iterator End()
     {
         return Iterator(&m_end);
     }
 
     // for tests
-
     T* GetItems()
     {
         return m_items;
@@ -218,6 +250,10 @@ public:
     }
 
     // operator[]
+    T& operator[](size_t pos)
+    {
+        return m_items[m_begin + pos];
+    }
 };
 
 }
