@@ -10,7 +10,6 @@ private:
     T& m_end;
     size_t m_size = 0;
     size_t m_capacity = 0;
-    // int max_size = 0;
 
 public:
     class Iterator {
@@ -84,10 +83,10 @@ public:
         }
     };
 
-    Vector(T* items, int size)
+    Vector(int size, T* items)
         : m_items(items)
-        , m_begin(&items[0])
-        , m_end(&items[m_size])
+        , m_begin(items[0])
+        , m_end(items[m_size])
         , m_size(size)
         , m_capacity(size)
     {
@@ -155,45 +154,40 @@ public:
         m_capacity = 0;
     }
 
-    //to do
+    // to do
     void PushBack(const T& value)
     {
-        if (m_size + 1 > m_capacity) {
-            m_capacity *= 2;
-            T* items = new T[m_capacity];
-
-            for (int i = 0; i < m_size; ++i) {
-                items[i] = m_items[i];
-            }
-
-            ++m_size;
-            delete[] m_items;
-            m_items = items;
+        if (m_capacity == m_size) {
+            Reserve(2 * m_size);
         }
 
-        m_items[m_size] = value;
+        new (m_items + m_size) T(value);
+        ++m_size;
     }
 
     void Reserve(size_t n)
     {
-        if(n <= m_capacity) return;
+        if (n <= m_capacity)
+            return;
         T* newItems = reinterpret_cast<T*>(new std::byte[n * sizeof(T)]);
+
+        // std::unitialized_copy
 
         size_t i = 0;
         try {
-            for(; i < m_size; ++i) {
+            for (; i < m_size; ++i) {
                 new (newItems + i) T(m_items[i]);
             }
-        } catch() {
+        } catch (...) {
             for (size_t j = 0; j < i; ++j) {
-                (m_items + i) -> ~T();
+                (m_items + i)->~T();
             }
             delete[] reinterpret_cast<std::byte*>(newItems);
             throw;
         }
 
-        for(size_t i = 0; i < m_size; ++i) {
-            m_items[i] -> ~T();
+        for (size_t i = 0; i < m_size; ++i) {
+            m_items[i]->~T();
         }
 
         delete[] reinterpret_cast<std::byte*>(m_items);
@@ -203,7 +197,9 @@ public:
 
     void Resize(size_t n, const T& value = T())
     {
-        if (n > m_capacity) Reserve(n);
+        if (n > m_capacity) {
+            Reserve(n);
+        }
         for (size_t i = m_size; i < n; ++i) {
             new (m_items + i) T(value);
         }
@@ -212,48 +208,52 @@ public:
         }
     }
 
-    // eh
-    Iterator Begin()
+    void PopBack()
     {
-        return Iterator(&m_begin);
+        --m_size;
+        (m_items + m_size)->~T();
     }
 
-    Iterator End()
+    T& At(size_t pos)
     {
-        return Iterator(&m_end);
-    }
-
-    // for tests
-    T* GetItems()
-    {
-        return m_items;
-    }
-
-    void PrintItems()
-    {
-        for (int i = 0; i < m_size; ++i) {
-            std::cout << m_items[i] << std::endl;
-        }
-    }
-
-    // to do
-    T* At(T pos)
-    {
-        T* temp = nullptr;
-        for (int i = 0; i < m_size; ++i) {
-            if (&T[i] == T) {
-                temp = T[i];
-            }
+        if (pos >= m_size) {
+            throw std::out_of_range();
         }
 
-        return temp;
+        return m_items[pos];
     }
 
-    // operator[]
     T& operator[](size_t pos)
     {
-        return m_items[m_begin + pos];
+        return m_items[pos];
     }
+
+    const T& operator[](size_t pos) const
+    {
+        return m_items[pos];
+    }
+
+    //// eh
+    //Iterator Begin()
+    //{
+    //    return Iterator(&m_begin);
+    //}
+
+    //Iterator End()
+    //{
+    //    return Iterator(&m_end);
+    //}
+
+    //ReverseIterator RBegin()
+    //{
+    //    return ReverseIterator(&m_begin);
+    //}
+
+    //ReverseIterator End()
+    //{
+    //    return ReverseIterator(&m_end);
+    //}
+
 };
 
 }

@@ -128,8 +128,8 @@ int main()
 	//ContainersAndFunctionTest();
 
 	//Figures::Circle* circles = new Figures::Circle[3] { Figures::Circle(1), Figures::Circle(5), Figures::Circle(11) };
-	/*Core::Vector<Figures::Circle> vector;
-	std::cout << vector.Empty() << std::endl;*/
+	Core::Vector<Figures::Circle> vector(3, new Figures::Circle[3] { Figures::Circle(1), Figures::Circle(5), Figures::Circle(11)} );
+	std::cout << vector.Empty() << std::endl;
 
 	/*std::vector<int> vec;
 	vec[0];*/
