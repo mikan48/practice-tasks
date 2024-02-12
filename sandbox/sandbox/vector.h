@@ -141,7 +141,17 @@ public:
         return m_size;
     }
 
+    int Size() const
+    {
+        return m_size;
+    }
+
     int Capacity()
+    {
+        return m_capacity;
+    }
+
+    int Capacity() const
     {
         return m_capacity;
     }
@@ -233,26 +243,26 @@ public:
         return m_items[pos];
     }
 
-    //// eh
-    //Iterator Begin()
-    //{
-    //    return Iterator(&m_begin);
-    //}
+    // eh
+    Iterator Begin()
+    {
+        return Iterator(&m_begin);
+    }
 
-    //Iterator End()
-    //{
-    //    return Iterator(&m_end);
-    //}
+    Iterator End()
+    {
+        return Iterator(&m_end);
+    }
 
-    //ReverseIterator RBegin()
-    //{
-    //    return ReverseIterator(&m_begin);
-    //}
+    ReverseIterator RBegin()
+    {
+        return ReverseIterator(&m_begin);
+    }
 
-    //ReverseIterator End()
-    //{
-    //    return ReverseIterator(&m_end);
-    //}
+    ReverseIterator REnd()
+    {
+        return ReverseIterator(&m_end);
+    }
 
 };
 
