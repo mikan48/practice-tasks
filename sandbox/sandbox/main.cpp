@@ -128,8 +128,24 @@ int main()
 	//ContainersAndFunctionTest();
 
 	//Figures::Circle* circles = new Figures::Circle[3] { Figures::Circle(1), Figures::Circle(5), Figures::Circle(11) };
-	Core::Vector<Figures::Circle> vector(3, new Figures::Circle[3] { Figures::Circle(1), Figures::Circle(5), Figures::Circle(11)} );
+
+	Core::Vector<int> vector(3, new int[3] {3, 5, 6} );
 	std::cout << vector.Empty() << std::endl;
+
+	std::cout << vector.Capacity() << std::endl;
+	vector.PushBack(18);
+	std::cout << vector.Capacity() << std::endl;
+	vector.PopBack();
+	std::cout << vector.Size() << " end." << std::endl;
+
+	auto iter = vector.Begin();
+
+	vector.PushBack(18);
+
+	while (iter != vector.End()) {
+		std::cout << "vector: " << *iter << std::endl;
+		++iter;
+	}
 
 	/*std::vector<int> vec;
 	vec[0];*/

@@ -2,7 +2,7 @@
 
 namespace Core {
 
-template <class T>
+template <typename T>
 class Vector {
 private:
     T* m_items = nullptr;
@@ -13,13 +13,14 @@ private:
 
 public:
     class Iterator {
-
+    public:
         using iterator_category = std::random_access_iterator_tag; // contiguous_iterator_tag
         using difference_type = std::ptrdiff_t;
         using value_type = T;
         using pointer = T*;
         using reference = T&;
 
+    private:
         pointer m_ptr;
 
     public:
@@ -28,10 +29,10 @@ public:
         {
         }
 
-        virtual ~Iterator()
-        {
-            delete m_ptr;
-        }
+        // virtual ~Iterator()
+        //{
+        //     delete m_ptr;
+        // }
 
         reference operator*() const
         {
@@ -41,12 +42,12 @@ public:
         {
             return m_ptr;
         }
-        virtual Iterator& operator++()
+        Iterator& operator++()
         {
             m_ptr++;
             return *this;
         }
-        virtual Iterator operator++(int)
+        Iterator operator++(int)
         {
             Iterator tmp = *this;
             ++(*this);
@@ -63,7 +64,7 @@ public:
         };
     };
 
-    class ReverseIterator : Iterator {
+    /*class ReverseIterator : Iterator {
     public:
         ReverseIterator(Iterator::pointer ptr)
             : Iterator::m_ptr(ptr)
@@ -81,9 +82,9 @@ public:
             --(*this);
             return tmp;
         }
-    };
+    };*/
 
-    Vector(int size, T* items)
+    Vector(size_t size, T* items)
         : m_items(items)
         , m_begin(items[0])
         , m_end(items[m_size])
@@ -136,22 +137,12 @@ public:
         return m_size == 0;
     }
 
-    int Size()
+    size_t Size() const
     {
         return m_size;
     }
 
-    int Size() const
-    {
-        return m_size;
-    }
-
-    int Capacity()
-    {
-        return m_capacity;
-    }
-
-    int Capacity() const
+    size_t Capacity() const
     {
         return m_capacity;
     }
@@ -177,8 +168,9 @@ public:
 
     void Reserve(size_t n)
     {
-        if (n <= m_capacity)
+        if (n <= m_capacity) {
             return;
+        }
         T* newItems = reinterpret_cast<T*>(new std::byte[n * sizeof(T)]);
 
         // std::unitialized_copy
@@ -196,10 +188,11 @@ public:
             throw;
         }
 
-        for (size_t i = 0; i < m_size; ++i) {
-            m_items[i]->~T();
+        for (size_t j = 0; j < m_size; ++j) {
+            m_items[j].~T();
         }
 
+        //???
         delete[] reinterpret_cast<std::byte*>(m_items);
         m_items = newItems;
         m_capacity = n;
@@ -233,6 +226,11 @@ public:
         return m_items[pos];
     }
 
+    void ShrinkToFit()
+    {
+        m_capacity = m_size;
+    }
+
     T& operator[](size_t pos)
     {
         return m_items[pos];
@@ -246,15 +244,15 @@ public:
     // eh
     Iterator Begin()
     {
-        return Iterator(&m_begin);
+        return Iterator(&m_items[0]);
     }
 
     Iterator End()
     {
-        return Iterator(&m_end);
+        return Iterator(&m_items[m_size]);
     }
 
-    ReverseIterator RBegin()
+    /*ReverseIterator RBegin()
     {
         return ReverseIterator(&m_begin);
     }
@@ -262,8 +260,7 @@ public:
     ReverseIterator REnd()
     {
         return ReverseIterator(&m_end);
-    }
-
+    }*/
 };
 
 }
