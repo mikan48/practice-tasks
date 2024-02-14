@@ -129,12 +129,13 @@ int main()
 
 	//Figures::Circle* circles = new Figures::Circle[3] { Figures::Circle(1), Figures::Circle(5), Figures::Circle(11) };
 
-	Core::Vector<int> vector(3, new int[3] {3, 5, 6} );
+	//Core::Vector<int> vector(3, new int[3] {3, 5, 6} );
+	Core::Vector<int> vector = {3, 5, 6};
 	std::cout << vector.Empty() << std::endl;
 
-	std::cout << vector.Capacity() << std::endl;
+	std::cout << "Capacity: " << vector.Capacity() << std::endl;
 	vector.PushBack(18);
-	std::cout << vector.Capacity() << std::endl;
+	std::cout << "Capacity: " << vector.Capacity() << std::endl;
 	vector.PopBack();
 	std::cout << vector.Size() << " end." << std::endl;
 
@@ -146,6 +147,16 @@ int main()
 		std::cout << "vector: " << *iter << std::endl;
 		++iter;
 	}
+
+	vector.ShrinkToFit();
+	std::cout << "Capacity: " << vector.Capacity() << std::endl;
+
+	assert(vector.At(1));
+
+	vector.Clear();
+	std::cout << vector.Empty() << std::endl;
+	
+	std::cout << vector.Size() << std::endl;
 
 	/*std::vector<int> vec;
 	vec[0];*/

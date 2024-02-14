@@ -6,8 +6,6 @@ template <typename T>
 class Vector {
 private:
     T* m_items = nullptr;
-    T& m_begin;
-    T& m_end;
     size_t m_size = 0;
     size_t m_capacity = 0;
 
@@ -84,55 +82,63 @@ public:
         }
     };*/
 
-    Vector(size_t size, T* items)
+    /*Vector(size_t size, T* items)
         : m_items(items)
         , m_begin(items[0])
         , m_end(items[m_size])
         , m_size(size)
         , m_capacity(size)
     {
-    }
+    }*/
 
-    Vector(int size)
+    Vector(size_t size)
         : m_size(size)
         , m_capacity(size)
     {
-        m_items = new T[size];
+        m_items = reinterpret_cast<T*>(new std::byte[size * sizeof(T)]);
+    }
+
+    // to do
+    Vector(std::initializer_list<T> list)
+    {
+        m_items = reinterpret_cast<T*>(new std::byte[list.size() * sizeof(T)]);
+        auto iterator = list.begin();
+        for (size_t i = 0; i < list.size(); ++i) {
+            new (m_items + i) T(*iterator);
+            ++iterator;
+        }
+        m_size = list.size();
+        m_capacity = m_size;
     }
 
     Vector() = default;
 
     ~Vector()
     {
-        delete[] m_items;
-    }
-
-    T& Front()
-    {
-        return m_begin;
+        delete[] reinterpret_cast<std::byte*>(m_items);
     }
 
     T& Front() const
     {
-        return m_begin;
-    }
-
-    T& Back()
-    {
-        return m_end;
+        return &m_items[0];
     }
 
     T& Back() const
     {
-        return m_end;
+        return &m_items[m_size];
     }
 
     T* Data()
     {
-        return m_begin;
+        return &m_items[0];
     }
 
-    bool Empty()
+    const T* Data() const
+    {
+        return &m_items[0];
+    }
+
+    bool Empty() const
     {
         return m_size == 0;
     }
@@ -149,17 +155,23 @@ public:
 
     void Clear()
     {
-        delete[] m_items;
+        for (size_t i = 0; i < m_size; ++i) {
+            (m_items + i)->~T();
+        }
+        delete[] reinterpret_cast<std::byte*>(m_items);
         m_items = nullptr;
         m_size = 0;
         m_capacity = 0;
     }
 
-    // to do
     void PushBack(const T& value)
     {
         if (m_capacity == m_size) {
-            Reserve(2 * m_size);
+            if (m_size != 0) {
+                Reserve(2 * m_size);
+            } else {
+                Reserve(1);
+            }
         }
 
         new (m_items + m_size) T(value);
@@ -192,7 +204,6 @@ public:
             m_items[j].~T();
         }
 
-        //???
         delete[] reinterpret_cast<std::byte*>(m_items);
         m_items = newItems;
         m_capacity = n;
@@ -220,7 +231,16 @@ public:
     T& At(size_t pos)
     {
         if (pos >= m_size) {
-            throw std::out_of_range();
+            throw std::out_of_range("out of range");
+        }
+
+        return m_items[pos];
+    }
+
+    const T& At(size_t pos) const
+    {
+        if (pos >= m_size) {
+            throw std::out_of_range("out of range");
         }
 
         return m_items[pos];
@@ -228,6 +248,12 @@ public:
 
     void ShrinkToFit()
     {
+        if (m_capacity == m_size) {
+            return;
+        }
+
+        // sad
+        //delete[] reinterpret_cast<std::byte*>(m_items + m_size);
         m_capacity = m_size;
     }
 
