@@ -58,8 +58,9 @@ public:
     };
 
     Vector(size_t size)
-        : m_size(size)
-        , m_capacity(size)
+        : m_capacity(size)
+        , m_size(size)
+
     {
         m_items = reinterpret_cast<T*>(new std::byte[size * sizeof(T)]);
     }
@@ -85,12 +86,12 @@ public:
 
     T& Front() const
     {
-        return &m_items[0];
+        return m_items[0];
     }
 
     T& Back() const
     {
-        return &m_items[m_size];
+        return m_items[m_size];
     }
 
     T* Data()
@@ -261,16 +262,6 @@ public:
     {
         return Iterator(&m_items[m_size]);
     }
-
-    /*ReverseIterator RBegin()
-    {
-        return ReverseIterator(&m_begin);
-    }
-
-    ReverseIterator REnd()
-    {
-        return ReverseIterator(&m_end);
-    }*/
 };
 
 }

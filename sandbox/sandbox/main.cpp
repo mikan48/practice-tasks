@@ -131,6 +131,8 @@ int main()
 
 	//Core::Vector<int> vector(3, new int[3] {3, 5, 6} );
 	Core::Vector<int> vector = {3, 5, 6};
+	Core::Vector<int> emptyVector;
+	assert(emptyVector.Empty() == true);
 	std::cout << vector.Empty() << std::endl;
 	assert(vector.Empty() == false);
 
@@ -156,6 +158,10 @@ int main()
 	std::cout << "Capacity: " << vector.Capacity() << std::endl;
 
 	vector.At(1);
+	vector.Data();
+	vector.Front();
+	vector.Back();
+	
 
 	vector.Clear();
 	assert(vector.Empty() == true);
