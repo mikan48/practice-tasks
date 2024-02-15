@@ -132,12 +132,16 @@ int main()
 	//Core::Vector<int> vector(3, new int[3] {3, 5, 6} );
 	Core::Vector<int> vector = {3, 5, 6};
 	std::cout << vector.Empty() << std::endl;
+	assert(vector.Empty() == false);
 
 	std::cout << "Capacity: " << vector.Capacity() << std::endl;
+	assert(vector.Capacity() == 3);
 	vector.PushBack(18);
+	assert(vector.Capacity() == 6);
 	std::cout << "Capacity: " << vector.Capacity() << std::endl;
 	vector.PopBack();
 	std::cout << vector.Size() << " end." << std::endl;
+	assert(vector.Size() == 3);
 
 	auto iter = vector.Begin();
 
@@ -151,9 +155,11 @@ int main()
 	vector.ShrinkToFit();
 	std::cout << "Capacity: " << vector.Capacity() << std::endl;
 
-	assert(vector.At(1));
+	vector.At(1);
 
 	vector.Clear();
+	assert(vector.Empty() == true);
+	assert(vector.Size() == 0);
 	std::cout << vector.Empty() << std::endl;
 	
 	std::cout << vector.Size() << std::endl;

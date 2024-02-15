@@ -27,11 +27,6 @@ public:
         {
         }
 
-        // virtual ~Iterator()
-        //{
-        //     delete m_ptr;
-        // }
-
         reference operator*() const
         {
             return *m_ptr;
@@ -62,35 +57,6 @@ public:
         };
     };
 
-    /*class ReverseIterator : Iterator {
-    public:
-        ReverseIterator(Iterator::pointer ptr)
-            : Iterator::m_ptr(ptr)
-        {
-        }
-
-        virtual ReverseIterator& operator++() override
-        {
-            Iterator::m_ptr--;
-            return *this;
-        }
-        virtual ReverseIterator operator++(int) override
-        {
-            ReverseIterator tmp = *this;
-            --(*this);
-            return tmp;
-        }
-    };*/
-
-    /*Vector(size_t size, T* items)
-        : m_items(items)
-        , m_begin(items[0])
-        , m_end(items[m_size])
-        , m_size(size)
-        , m_capacity(size)
-    {
-    }*/
-
     Vector(size_t size)
         : m_size(size)
         , m_capacity(size)
@@ -98,7 +64,6 @@ public:
         m_items = reinterpret_cast<T*>(new std::byte[size * sizeof(T)]);
     }
 
-    // to do
     Vector(std::initializer_list<T> list)
     {
         m_items = reinterpret_cast<T*>(new std::byte[list.size() * sizeof(T)]);
@@ -252,8 +217,27 @@ public:
             return;
         }
 
-        // sad
-        //delete[] reinterpret_cast<std::byte*>(m_items + m_size);
+        T* newItems = reinterpret_cast<T*>(new std::byte[m_size * sizeof(T)]);
+
+        size_t i = 0;
+        try {
+            for (; i < m_size; ++i) {
+                new (newItems + i) T(m_items[i]);
+            }
+        } catch (...) {
+            for (size_t j = 0; j < i; ++j) {
+                (m_items + i)->~T();
+            }
+            delete[] reinterpret_cast<std::byte*>(newItems);
+            throw;
+        }
+
+        for (size_t j = 0; j < m_size; ++j) {
+            m_items[j].~T();
+        }
+
+        delete[] reinterpret_cast<std::byte*>(m_items);
+        m_items = newItems;
         m_capacity = m_size;
     }
 
