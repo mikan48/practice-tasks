@@ -133,42 +133,43 @@ int main()
 	Core::Vector<int> vector = {3, 5, 6};
 	Core::Vector<int> emptyVector;
 	assert(emptyVector.Empty() == true);
-	std::cout << vector.Empty() << std::endl;
+	//std::cout << vector.Empty() << std::endl;
 	assert(vector.Empty() == false);
 
-	std::cout << "Capacity: " << vector.Capacity() << std::endl;
+	//std::cout << "Capacity: " << vector.Capacity() << std::endl;
 	assert(vector.Capacity() == 3);
 	vector.PushBack(18);
 	assert(vector.Capacity() == 6);
-	std::cout << "Capacity: " << vector.Capacity() << std::endl;
+	assert(vector.Size() == 4);
+	//std::cout << "Capacity: " << vector.Capacity() << std::endl;
 	vector.PopBack();
-	std::cout << vector.Size() << " end." << std::endl;
 	assert(vector.Size() == 3);
-
-	auto iter = vector.Begin();
-
-	vector.PushBack(18);
-
-	while (iter != vector.End()) {
-		std::cout << "vector: " << *iter << std::endl;
-		++iter;
-	}
+	//std::cout << vector.Size() << " end." << std::endl;
 
 	vector.ShrinkToFit();
-	std::cout << "Capacity: " << vector.Capacity() << std::endl;
+	assert(vector.Capacity() == 3);
+	//std::cout << "Capacity: " << vector.Capacity() << std::endl;
+	vector.Clear();
+	assert(vector.Empty() == true);
+	assert(vector.Size() == 0);
 
 	vector.At(1);
 	vector.Data();
 	vector.Front();
 	vector.Back();
-	
 
-	vector.Clear();
-	assert(vector.Empty() == true);
-	assert(vector.Size() == 0);
-	std::cout << vector.Empty() << std::endl;
+	auto iter = vector.Begin();
+
+	//vector.PushBack(18);
+
+	while (iter != vector.End()) {
+		std::cout << "vector: " << *iter << std::endl;
+		++iter;
+	}
 	
-	std::cout << vector.Size() << std::endl;
+	//std::cout << vector.Empty() << std::endl;
+	
+	//std::cout << vector.Size() << std::endl;
 
 	/*std::vector<int> vec;
 	vec[0];*/
