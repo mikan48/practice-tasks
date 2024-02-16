@@ -58,11 +58,8 @@ public:
     };
 
     Vector(size_t size)
-        : m_capacity(size)
-        , m_size(size)
-
     {
-        m_items = reinterpret_cast<T*>(new std::byte[size * sizeof(T)]);
+        Reserve(size);
     }
 
     Vector(std::initializer_list<T> list)
@@ -91,7 +88,7 @@ public:
 
     T& Back() const
     {
-        return m_items[m_size];
+        return m_items[m_size - 1];
     }
 
     T* Data()
@@ -133,11 +130,7 @@ public:
     void PushBack(const T& value)
     {
         if (m_capacity == m_size) {
-            if (m_size != 0) {
-                Reserve(2 * m_size);
-            } else {
-                Reserve(1);
-            }
+            Reserve(2 * m_size + 1);
         }
 
         new (m_items + m_size) T(value);

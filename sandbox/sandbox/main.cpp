@@ -131,41 +131,59 @@ int main()
 
 	//Core::Vector<int> vector(3, new int[3] {3, 5, 6} );
 	Core::Vector<int> vector = {3, 5, 6};
-	Core::Vector<int> emptyVector;
-	assert(emptyVector.Empty() == true);
-	//std::cout << vector.Empty() << std::endl;
-	assert(vector.Empty() == false);
-
-	//std::cout << "Capacity: " << vector.Capacity() << std::endl;
+	assert(!vector.Empty());
+	assert(vector.Size() == 3);
 	assert(vector.Capacity() == 3);
+	assert(vector.Front() == 3);
+	assert(vector.Back() == 6);
+
 	vector.PushBack(18);
-	assert(vector.Capacity() == 6);
 	assert(vector.Size() == 4);
-	//std::cout << "Capacity: " << vector.Capacity() << std::endl;
+	assert(vector.Capacity() == 7);
+	assert(vector.Back() == 18);
+
 	vector.PopBack();
 	assert(vector.Size() == 3);
-	//std::cout << vector.Size() << " end." << std::endl;
+	assert(vector.Capacity() == 7);
+	assert(vector.Back() == 6);
 
 	vector.ShrinkToFit();
+	assert(vector.Capacity() == vector.Size());
+	assert(!vector.Empty());
+
+	auto data = vector.Data();
+	assert(data[0] == 3);
+
+	assert(vector.At(1) == 5);
+
+	assert(*vector.Begin() == 3);
+
+	assert(vector[0] == vector.Front());
+	assert(vector[vector.Size() - 1] == vector.Back());
+
+	vector.Resize(1);
+	assert(vector.Size() == 1);
 	assert(vector.Capacity() == 3);
-	//std::cout << "Capacity: " << vector.Capacity() << std::endl;
+
 	vector.Clear();
-	assert(vector.Empty() == true);
+	assert(vector.Empty());
 	assert(vector.Size() == 0);
 
-	vector.At(1);
-	vector.Data();
-	vector.Front();
-	vector.Back();
+	vector.Reserve(3);
+	assert(vector.Capacity() == 3);
+	assert(vector.Empty());
 
-	auto iter = vector.Begin();
 
-	//vector.PushBack(18);
+	//vector.At(1);
 
-	while (iter != vector.End()) {
-		std::cout << "vector: " << *iter << std::endl;
-		++iter;
-	}
+	//auto iter = vector.Begin();
+
+	////vector.PushBack(18);
+
+	//while (iter != vector.End()) {
+	//	std::cout << "vector: " << *iter << std::endl;
+	//	++iter;
+	//}
 	
 	//std::cout << vector.Empty() << std::endl;
 	
