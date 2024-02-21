@@ -1,6 +1,10 @@
 #include <iostream>
+#include <cassert>
 #include "figures.h"
 #include "containers.h"
+#include "vector.h"
+#include "vector"
+#include "tests.h"
 
 void WaitingForCorrectInput(double& number) 
 {
@@ -121,9 +125,7 @@ void ContainersAndFunctionTest()
 
 int main() 
 {
-	//FiguresFeaturesTest();
-
-	ContainersAndFunctionTest();
+	Tests::VectorTests();
 
 	return 0;
 }
