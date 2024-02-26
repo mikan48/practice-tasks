@@ -70,6 +70,26 @@ void VectorTests()
     vector.Reserve(3);
     assert(vector.Capacity() == 3);
     assert(vector.Empty());
+
+    vector.PushBack(18);
+    assert(vector.Back() == 18);
+    assert(vector.Size() == 1);
+
+    Core::Vector<int> moveVector = std::move(vector);
+    assert(vector.Empty());
+    assert(vector.Capacity() == 0);
+    assert(vector.Data() == nullptr);
+    assert(!moveVector.Empty());
+    assert(moveVector.Back() == 18);
+    assert(moveVector.Data()[0] == 18);
+
+    vector = std::move(moveVector);
+    assert(!vector.Empty());
+    assert(vector.Back() == 18);
+    assert(vector.Data()[0] == 18);
+    assert(moveVector.Empty());
+    assert(moveVector.Capacity() == 0);
+    assert(moveVector.Data() == nullptr);
 }
 
 }
