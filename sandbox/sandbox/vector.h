@@ -97,6 +97,25 @@ public:
         m_capacity = m_size;
     }
 
+    Vector(Vector&& vector) : m_items(vector.m_items), m_size(vector.m_size), m_capacity(vector.m_capacity)
+    {
+        vector.m_items = nullptr;
+        vector.m_size = 0;
+        vector.m_capacity = 0;
+    }
+
+    Vector& operator=(Vector&& vector) 
+    {
+        m_items = std::move(vector.m_items);
+        m_size = std::move(vector.m_size);
+        m_capacity = std::move(vector.m_capacity);
+        vector.m_items = nullptr;
+        vector.m_size = 0;
+        vector.m_capacity = 0;
+
+        return *this;    
+    }
+
     Vector() = default;
 
     ~Vector()
