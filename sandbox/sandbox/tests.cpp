@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include "vector.h"
+#include "unique_ptr.h"
 
 namespace Tests {
 
@@ -70,6 +71,11 @@ void VectorTests()
     vector.Reserve(3);
     assert(vector.Capacity() == 3);
     assert(vector.Empty());
+}
+
+void UniquePtrTests()
+{
+    Core::unique_ptr<int> p(new int(2));
 }
 
 }
