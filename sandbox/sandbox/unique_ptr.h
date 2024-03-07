@@ -5,43 +5,50 @@ namespace Core {
 template <typename T>
 class unique_ptr {
 private:
-    T* ptr;
+    T* m_ptr;
 
 public:
     explicit unique_ptr(T* ptr)
-        : ptr(ptr)
+        : m_ptr(ptr)
     {
     }
 
     ~unique_ptr()
     {
-        delete ptr;
+        delete m_ptr;
     }
 
     unique_ptr(const unique_ptr&) = delete;
     unique_ptr& operator=(const unique_ptr&) = delete;
 
-    unique_ptr(unique_ptr&& another) : ptr(another.ptr)
+    unique_ptr(unique_ptr&& another) : ptr(another.m_ptr)
     { 
-        another.ptr = nullptr;
+        another.m_ptr = nullptr;
     }
 
     unique_ptr& operator=(unique_ptr&& another) 
     {
-        delete ptr;
-        ptr = another.ptr;
-        another.ptr = nullptr;
+        delete m_ptr;
+        m_ptr = another.m_ptr;
+        another.m_ptr = nullptr;
+        return *this;
     }
 
     T& operator*() const
     {
-        return *ptr;
+        return *m_ptr;
     }
 
     T* operator->() const
     {
-        return ptr;
+        return m_ptr;
     }
 };
+
+template <typename T, typename... Args>
+unique_ptr<T> make_unique(Args&&... args)
+{
+    return unique_ptr<T>(std::forward<Args>(args)...);
+}
 
 }

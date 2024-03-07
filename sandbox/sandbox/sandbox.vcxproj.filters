@@ -47,5 +47,8 @@
     <ClInclude Include="unique_ptr.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="shared_ptr.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
