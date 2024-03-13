@@ -137,7 +137,6 @@
   <ItemGroup>
     <ClInclude Include="containers.h" />
     <ClInclude Include="figures.h" />
-    <ClInclude Include="shared_ptr.h" />
     <ClInclude Include="tests.h" />
     <ClInclude Include="unique_ptr.h" />
     <ClInclude Include="vector.h" />
