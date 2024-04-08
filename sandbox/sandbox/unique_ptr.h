@@ -2,11 +2,11 @@
 
 namespace Core {
 
-template <typename T>
+template <typename T, class Deleter = std::default_delete<T>>
 class unique_ptr {
 private:
     T* m_ptr = nullptr;
-
+    Deleter m_deleter = Deleter();
 public:
     explicit unique_ptr(T* ptr)
         : m_ptr(ptr)
@@ -17,7 +17,7 @@ public:
 
     ~unique_ptr()
     {
-        delete m_ptr;
+        m_deleter(m_ptr);
     }
 
     unique_ptr(const unique_ptr&) = delete;
@@ -31,7 +31,7 @@ public:
 
     unique_ptr& operator=(unique_ptr&& another)
     {
-        delete m_ptr;
+        m_deleter(m_ptr);
         m_ptr = another.m_ptr;
         another.m_ptr = nullptr;
         return *this;
@@ -42,6 +42,11 @@ public:
         return m_ptr;
     }
 
+    Deleter get_deleter() const noexcept
+    {
+        return m_deleter;
+    }
+
     T& operator*() const
     {
         return *m_ptr;
@@ -50,6 +55,19 @@ public:
     T* operator->() const
     {
         return m_ptr;
+    }
+
+    T* release() noexcept
+    {
+        T* ptr = m_ptr;
+        m_ptr = nullptr;
+        return ptr;
+    }
+
+    void reset(T* ptr) noexcept
+    {
+        m_deleter(m_ptr);
+        m_ptr = ptr;
     }
 };
 
