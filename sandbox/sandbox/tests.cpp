@@ -80,6 +80,11 @@ void UniquePtrTests()
     Core::unique_ptr<int> p3;
     assert(std::is_constructible<Core::unique_ptr<int>>::value);
     assert(!std::is_copy_constructible<Core::unique_ptr<int>>::value);
+    assert(*p1.get() == 2);
+    p1.reset(new int(1));
+    assert(*p1.get() == 1);
+    p1.release();
+    assert(p1.get() == nullptr);
 }
 
 }
