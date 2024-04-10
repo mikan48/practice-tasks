@@ -57,13 +57,13 @@ public:
             --(*this);
             return tmp;
         }
-        Iterator operator+(long n) 
+        Iterator operator+(long n)
         {
             Iterator it = *this;
             it.m_ptr = it.m_ptr + n;
             return it;
         }
-        Iterator& operator+=(long n) 
+        Iterator& operator+=(long n)
         {
             Iterator& it = *this;
             it.m_ptr = it.m_ptr + n;
@@ -97,14 +97,17 @@ public:
         m_capacity = m_size;
     }
 
-    Vector(Vector&& vector) : m_items(vector.m_items), m_size(vector.m_size), m_capacity(vector.m_capacity)
+    Vector(Vector&& vector)
+        : m_items(vector.m_items)
+        , m_size(vector.m_size)
+        , m_capacity(vector.m_capacity)
     {
         vector.m_items = nullptr;
         vector.m_size = 0;
         vector.m_capacity = 0;
     }
 
-    Vector& operator=(Vector&& vector) 
+    Vector& operator=(Vector&& vector)
     {
         m_items = std::move(vector.m_items);
         m_size = std::move(vector.m_size);
@@ -113,7 +116,7 @@ public:
         vector.m_size = 0;
         vector.m_capacity = 0;
 
-        return *this;    
+        return *this;
     }
 
     Vector() = default;
@@ -169,6 +172,17 @@ public:
         m_capacity = 0;
     }
 
+    template <typename... Args>
+    void EmplaceBack(const Args&... args)
+    {
+        if (m_capacity == m_size) {
+            Reserve(2 * m_size + 1);
+        }
+
+        new (m_items + m_size) T(std::forward<T>(args));
+        ++m_size;
+    }
+
     void PushBack(const T& value)
     {
         if (m_capacity == m_size) {
@@ -176,6 +190,16 @@ public:
         }
 
         new (m_items + m_size) T(value);
+        ++m_size;
+    }
+
+    void PushBack(T&& value)
+    {
+        if (m_capacity == m_size) {
+            Reserve(2 * m_size + 1);
+        }
+
+        new (m_items + m_size) T(std::move(value));
         ++m_size;
     }
 
