@@ -150,18 +150,6 @@ public:
         m_capacity = 0;
     }
 
-    //
-    template <typename... Args>
-    void EmplaceBack(const Args&... args)
-    {
-        if (m_capacity == m_size) {
-            Reserve(2 * m_size + 1);
-        }
-
-        new (m_items + m_size) T(std::forward<T>(args));
-        ++m_size;
-    }
-
     void PushBack(const T& value)
     {
         if (m_capacity == m_size) {
@@ -169,16 +157,6 @@ public:
         }
 
         new (m_items + m_size) T(value);
-        ++m_size;
-    }
-
-    void PushBack(T&& value)
-    {
-        if (m_capacity == m_size) {
-            Reserve(2 * m_size + 1);
-        }
-
-        new (m_items + m_size) T(std::move(value));
         ++m_size;
     }
 
