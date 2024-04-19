@@ -44,5 +44,8 @@
     <ClInclude Include="tests.h">
       <Filter>Source Files\Tests</Filter>
     </ClInclude>
+    <ClInclude Include="shared_ptr.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

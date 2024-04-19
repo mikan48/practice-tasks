@@ -5,8 +5,8 @@ namespace Core {
 template <typename T>
 class shared_ptr {
 private:
-    T* m_ptr;
-    size_t* m_count;
+    T* m_ptr = nullptr;
+    size_t* m_count = nullptr;
 
 public:
     shared_ptr() { }
@@ -31,5 +31,38 @@ public:
         other.m_ptr = nullptr;
         other.m_count = nullptr;
     }
+
+    T& operator*() const
+    {
+        return *m_ptr;
+    }
+
+    T* operator->() const
+    {
+        return m_ptr;
+    }
+
+    size_t use_count() const
+    {
+        return *count;
+    }
+
+    ~shared_ptr()
+    {
+        if (*m_count > 1) {
+            --(*m_count);
+            return;
+        }
+        delete m_ptr;
+        delete m_count;
+    }
 };
+
+template <typename T, typename... Args>
+shared_ptr<T> make_shared(Args&... args)
+{
+    auto ptr = new T(std::forward<Args>(args));
+    return shared_ptr<T>(ptr);
+}
+
 }
