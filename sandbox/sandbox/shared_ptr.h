@@ -8,6 +8,27 @@ private:
     T* m_ptr = nullptr;
     size_t* m_count = nullptr;
 
+    struct DeleterBase {
+        virtual void operator()(void*);
+        virtual ~DeleterBase() { }
+    };
+
+    template <typename U>
+    struct DeleterDerived : public DeleterBase {
+        U deleter;
+        DeleterDerived(const U& deleter)
+            : deleter(deleter)
+        {
+        }
+
+        void operator()(void* ptr) override
+        {
+            deleter(ptr);
+        }
+    };
+
+    DeleterBase* deleter = nullptr;
+
     template <typename U>
     struct ControlBlock {
         size_t shared_count;
@@ -38,6 +59,9 @@ public:
         : ptr(ptr)
         , m_count(new size_t(1))
     {
+        if constexpr (std::is_base_of_v<enabled_shared_from_this<T>, T>) {
+            // m_ptr->m_wptr = /**/;
+        }
     }
 
     shared_ptr(const shared_ptr& other)
@@ -72,19 +96,29 @@ public:
 
     ~shared_ptr()
     {
-        --m_cptr->shared_count;
-
-        if (m_cptr->shared_count > 0) {
+        --*m_count;
+        if (*m_count > 0) {
             return;
         }
 
-        if (m_cptr->weak_count == 0) {
-            delete cptr;
-            return;
-        }
-
-        cptr->object.~T();
+        deleter(m_count);
     }
+
+    //~shared_ptr()
+    //{
+    //    --m_cptr->shared_count;
+
+    //    if (m_cptr->shared_count > 0) {
+    //        return;
+    //    }
+
+    //    if (m_cptr->weak_count == 0) {
+    //        delete cptr;
+    //        return;
+    //    }
+
+    //    cptr->object.~T();
+    //}
 };
 
 template <typename T>
@@ -104,22 +138,47 @@ public:
 
     shared_ptr<T> lock() const
     {
+
     }
 
     ~weak_ptr()
     {
-        
+        --m_cptr->weak_count;
+        if (m_cptr->shared_count == 0 && cptr->weak_count) {
+            // dealloc
+        }
     }
 };
 
 template <typename T, typename... Args>
 shared_ptr<T> make_shared(Args&... args)
 {
-    auto ptr = new ControlBlock<T> { 1, T(std::forward<Args>(args)...) };
-    return shared_ptr<T>(shared_ptr::make_shared_t(), ptr);
+    return aloccate_shared(std::allocator<T>(), std::forward<Args>(args)...);
+    //auto ptr = new ControlBlock<T> { 1, T(std::forward<Args>(args)...) };
+    //return shared_ptr<T>(shared_ptr::make_shared_t(), ptr);
 
-    // auto ptr = new T(std::forward<Args>(args));
-    // return shared_ptr<T>(ptr);
+     //auto ptr = new T(std::forward<Args>(args));
+     //return shared_ptr<T>(ptr);
 }
+
+template <typename T, typename Alloc, typename... Args>
+shared_ptr<T> aloccate_shared(Alloc& alloc, Args&&... args)
+{
+}
+
+template <typename T>
+class enabled_shared_from_this {
+private:
+    weak_ptr<T> m_wptr;
+
+    template <typename U>
+    friend class shared_ptr;
+
+public:
+    shared_ptr<T> shared_from_this()
+    {
+        return m_wptr.lock();
+    }
+};
 
 }
