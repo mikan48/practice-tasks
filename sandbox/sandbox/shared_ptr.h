@@ -29,6 +29,33 @@ private:
 
     DeleterBase* deleter = nullptr;
 
+    //////////////////////
+
+    struct BaseControlBlock {
+        size_t shared_count = 0;
+        size_t weak_count = 0;
+        virtual ~BaseControlBlock() = default;
+    };
+
+    template <typename Deleter = std::default_delete<T>, typename Allocator = std::allocator<T>>
+    struct ControlBlockDirect : BaseControlBlock {
+        T* object;
+        Deleter deleter;
+        Allocator aloccator;
+        //...
+    };
+
+    template <typename U, typename Allocator = std::allocator<T>>
+    struct ControlBlockMakeShared : BaseControlBlock {
+        alignas(U) std::byte[sizeof(T)] obj; //to do
+        Allocator allocator;
+        U object; // T* ptr
+    };
+
+    BaseControlBlock* m_cb;
+
+    /////////////////////
+
     template <typename U>
     struct ControlBlock {
         size_t shared_count;
@@ -56,11 +83,11 @@ public:
     shared_ptr() { }
 
     shared_ptr(T* ptr)
-        : ptr(ptr)
+        : m_ptr(ptr)
         , m_count(new size_t(1))
     {
         if constexpr (std::is_base_of_v<enabled_shared_from_this<T>, T>) {
-            // m_ptr->m_wptr = /**/;
+            m_ptr->m_wptr = m_cptr; //?? *this
         }
     }
 
@@ -138,14 +165,19 @@ public:
 
     shared_ptr<T> lock() const
     {
+        if (expired()) {
+            return shared_ptr<T>();
+        }
 
+        return shared_ptr<T>(*this);
     }
 
     ~weak_ptr()
     {
         --m_cptr->weak_count;
         if (m_cptr->shared_count == 0 && cptr->weak_count) {
-            // dealloc
+            delete m_cptr->shared_count;
+            delete m_cptr->weak_count;
         }
     }
 };
@@ -154,16 +186,20 @@ template <typename T, typename... Args>
 shared_ptr<T> make_shared(Args&... args)
 {
     return aloccate_shared(std::allocator<T>(), std::forward<Args>(args)...);
-    //auto ptr = new ControlBlock<T> { 1, T(std::forward<Args>(args)...) };
-    //return shared_ptr<T>(shared_ptr::make_shared_t(), ptr);
+    // auto ptr = new ControlBlock<T> { 1, T(std::forward<Args>(args)...) };
+    // return shared_ptr<T>(shared_ptr::make_shared_t(), ptr);
 
-     //auto ptr = new T(std::forward<Args>(args));
-     //return shared_ptr<T>(ptr);
+    // auto ptr = new T(std::forward<Args>(args));
+    // return shared_ptr<T>(ptr);
 }
 
 template <typename T, typename Alloc, typename... Args>
 shared_ptr<T> aloccate_shared(Alloc& alloc, Args&&... args)
 {
+    //rebind alloc to CBShared
+    //alloc 1
+    //placement new/construct obj
+    //alloc to cb
 }
 
 template <typename T>
