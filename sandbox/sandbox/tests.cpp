@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cassert>
 #include "vector.h"
+#include "tests.h"
+#include "shared_ptr.h"
 
 namespace Tests {
 
@@ -90,6 +92,35 @@ void VectorTests()
     assert(moveVector.Empty());
     assert(moveVector.Capacity() == 0);
     assert(moveVector.Data() == nullptr);
+}
+
+void SharedPtrTests()
+{
+    //Core::Vector<int> vector = { 3, 5, 6 };
+    Core::shared_ptr<int> num; 
+    assert(num.get() == nullptr);
+    assert(num.use_count() == 0);
+
+    Core::shared_ptr<int> num2 = num;
+    assert(num2.use_count() == 0);
+    assert(num.use_count() == 0);
+
+    Core::shared_ptr<int> num3(new int(5));
+    assert(*num3.get() == 5);
+    assert(num3.use_count() == 1);
+
+    Core::shared_ptr<int> num4 = num3;
+    assert(*num4.get() == 5);
+    assert(num4.use_count() == 2);
+
+    //num = num3;
+
+    //std::shared_ptr<int> sharedReference(new int(5));
+    //std::cout << *sharedReference.get() << std::endl;
+    ////std::cout << sharedReference.use_count() << std::endl;
+    //std::shared_ptr<int> sharedReference2;
+    //sharedReference2 = sharedReference;
+    //std::cout << *sharedReference2.get() << std::endl;
 }
 
 }

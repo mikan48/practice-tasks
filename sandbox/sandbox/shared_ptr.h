@@ -3,6 +3,9 @@
 namespace Core {
 
 template <typename T>
+class enabled_shared_from_this;
+
+template <typename T>
 class shared_ptr {
 private:
     T* m_ptr = nullptr;
@@ -31,45 +34,45 @@ private:
 
     //////////////////////
 
-    struct BaseControlBlock {
-        size_t shared_count = 0;
-        size_t weak_count = 0;
-        virtual ~BaseControlBlock() = default;
-    };
+    // struct BaseControlBlock {
+    //     size_t shared_count = 0;
+    //     size_t weak_count = 0;
+    //     virtual ~BaseControlBlock() = default;
+    // };
 
-    template <typename Deleter = std::default_delete<T>, typename Allocator = std::allocator<T>>
-    struct ControlBlockDirect : BaseControlBlock {
-        T* object;
-        Deleter deleter;
-        Allocator aloccator;
-        //...
-    };
+    // template <typename Deleter = std::default_delete<T>, typename Allocator = std::allocator<T>>
+    // struct ControlBlockDirect : BaseControlBlock {
+    //     T* object;
+    //     Deleter deleter;
+    //     Allocator aloccator;
+    //     //...
+    // };
 
-    template <typename U, typename Allocator = std::allocator<T>>
-    struct ControlBlockMakeShared : BaseControlBlock {
-        alignas(U) std::byte[sizeof(T)] obj; //to do
-        Allocator allocator;
-        U object; // T* ptr
-    };
+    // template <typename U, typename Allocator = std::allocator<T>>
+    // struct ControlBlockMakeShared : BaseControlBlock {
+    //     alignas(U) std::byte[sizeof(T)] obj; //to do
+    //     Allocator allocator;
+    //     U object; // T* ptr
+    // };
 
-    BaseControlBlock* m_cb;
+    // BaseControlBlock* m_cb;
 
     /////////////////////
 
     template <typename U>
     struct ControlBlock {
-        size_t shared_count;
-        size_t weak_count;
+        size_t shared_count = 0;
+        size_t weak_count = 0;
         U object;
     };
 
     template <typename U>
-    class weak_ptr;
+    friend class weak_ptr;
 
     ControlBlock<T>* m_cptr = nullptr;
 
     template <typename U, typename... Args>
-    friend shared_ptr<U> make_shared(Args&&... args);
+    friend shared_ptr<U> make_shared(Args&... args);
 
     struct make_shared_t;
 
@@ -80,14 +83,17 @@ private:
     }
 
 public:
-    shared_ptr() { }
+    shared_ptr()
+        : m_count(new size_t(0))
+    {
+    }
 
     shared_ptr(T* ptr)
         : m_ptr(ptr)
         , m_count(new size_t(1))
     {
         if constexpr (std::is_base_of_v<enabled_shared_from_this<T>, T>) {
-            m_ptr->m_wptr = m_cptr; //?? *this
+            m_cptr->object.cptr = *this; //??
         }
     }
 
@@ -95,7 +101,9 @@ public:
         : m_ptr(other.m_ptr)
         , m_count(other.m_count)
     {
-        ++(*m_count);
+        if (m_ptr != nullptr) {
+            ++(*m_count);
+        }
     }
 
     shared_ptr(shared_ptr&& other)
@@ -115,20 +123,45 @@ public:
     {
         return m_ptr;
     }
+    
+    shared_ptr& operator=(const shared_ptr& other)
+    {
+        m_count = other.m_count;
+        m_cptr = other.m_cptr;
+        m_ptr = other.m_ptr;
+        deleter = other.deleter;
+
+        if (m_ptr != nullptr) {
+            m_count++;
+        }
+
+        return *this;
+    }
 
     size_t use_count() const
     {
-        return *count;
+        return *m_count;
+    }
+
+    T* get() const
+    {
+        return m_ptr;
+        // return m_cptr->object*;
     }
 
     ~shared_ptr()
     {
-        --*m_count;
-        if (*m_count > 0) {
-            return;
-        }
+        if(m_count != nullptr && *m_count != 0) {
+            --*m_count;
 
-        deleter(m_count);
+            if (*m_count > 0) {
+            return;
+            }
+        }        
+
+        if(m_count == 0) {
+            delete m_count;
+        }
     }
 
     //~shared_ptr()
@@ -150,17 +183,17 @@ public:
 
 template <typename T>
 class weak_ptr {
-    ControlBlock<T>* m_cptr = nullptr;
-
 public:
+    shared_ptr::ControlBlock<T>* cptr = nullptr;
+
     weak_ptr(const shared_ptr<T>& ptr)
-        : m_cptr(ptr.m_cptr)
+        : cptr(ptr.cptr)
     {
     }
 
     bool expired() const
     {
-        return m_cptr->shared_count > 0;
+        return cptr->shared_count > 0;
     }
 
     shared_ptr<T> lock() const
@@ -174,10 +207,10 @@ public:
 
     ~weak_ptr()
     {
-        --m_cptr->weak_count;
-        if (m_cptr->shared_count == 0 && cptr->weak_count) {
-            delete m_cptr->shared_count;
-            delete m_cptr->weak_count;
+        --cptr->weak_count;
+         if (cptr->shared_count == 0 && cptr->weak_count) {
+            delete cptr->shared_count;
+            delete cptr->weak_count;
         }
     }
 };
@@ -196,10 +229,10 @@ shared_ptr<T> make_shared(Args&... args)
 template <typename T, typename Alloc, typename... Args>
 shared_ptr<T> aloccate_shared(Alloc& alloc, Args&&... args)
 {
-    //rebind alloc to CBShared
-    //alloc 1
-    //placement new/construct obj
-    //alloc to cb
+    // rebind alloc to CBShared
+    // alloc 1
+    // placement new/construct obj
+    // alloc to cb
 }
 
 template <typename T>
@@ -211,7 +244,7 @@ private:
     friend class shared_ptr;
 
 public:
-    shared_ptr<T> shared_from_this()
+    shared_ptr<T> shared_from_this() const
     {
         return m_wptr.lock();
     }
