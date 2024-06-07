@@ -113,7 +113,12 @@ void SharedPtrTests()
     assert(*num4.get() == 5);
     assert(num4.use_count() == 2);
 
-    //num = num3;
+    num = num3;
+    assert(*num.get() == 5);
+    assert(num.use_count() == 3);
+
+    num4 = Core::make_shared<int>(1);
+
 
     //std::shared_ptr<int> sharedReference(new int(5));
     //std::cout << *sharedReference.get() << std::endl;

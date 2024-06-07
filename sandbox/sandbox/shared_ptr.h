@@ -132,7 +132,7 @@ public:
         deleter = other.deleter;
 
         if (m_ptr != nullptr) {
-            m_count++;
+            ++(*m_count);
         }
 
         return *this;
@@ -208,22 +208,22 @@ public:
     ~weak_ptr()
     {
         --cptr->weak_count;
-         if (cptr->shared_count == 0 && cptr->weak_count) {
+         /*if (cptr->shared_count == 0 && cptr->weak_count) {
             delete cptr->shared_count;
             delete cptr->weak_count;
-        }
+        }*/
     }
 };
 
 template <typename T, typename... Args>
-shared_ptr<T> make_shared(Args&... args)
+shared_ptr<T> make_shared(Args&&... args)
 {
-    return aloccate_shared(std::allocator<T>(), std::forward<Args>(args)...);
+    //return aloccate_shared(std::allocator<T>(), std::forward<Args>(args)...);
     // auto ptr = new ControlBlock<T> { 1, T(std::forward<Args>(args)...) };
     // return shared_ptr<T>(shared_ptr::make_shared_t(), ptr);
 
-    // auto ptr = new T(std::forward<Args>(args));
-    // return shared_ptr<T>(ptr);
+     auto ptr = new T(std::forward<Args>(args)...);
+     return shared_ptr<T>(ptr);
 }
 
 template <typename T, typename Alloc, typename... Args>
@@ -249,5 +249,6 @@ public:
         return m_wptr.lock();
     }
 };
+
 
 }
