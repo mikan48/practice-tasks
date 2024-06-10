@@ -6,6 +6,9 @@ template <typename T>
 class enabled_shared_from_this;
 
 template <typename T>
+class weak_ptr;
+
+template <typename T>
 class shared_ptr {
 private:
     T* m_ptr = nullptr;
@@ -50,34 +53,34 @@ private:
 
     // template <typename U, typename Allocator = std::allocator<T>>
     // struct ControlBlockMakeShared : BaseControlBlock {
-    //     alignas(U) std::byte[sizeof(T)] obj; //to do
+    //     alignas(U) std::byte obj = new std::byte[sizeof(T)]; //to do
     //     Allocator allocator;
-    //     U object; // T* ptr
+    //     //U object; // T* ptr
     // };
 
     // BaseControlBlock* m_cb;
 
     /////////////////////
 
-    template <typename U>
+    // template <typename U>
     struct ControlBlock {
         size_t shared_count = 0;
         size_t weak_count = 0;
-        U object;
+        T* ptr = nullptr;
     };
+
+    ControlBlock* m_cptr = nullptr;
 
     template <typename U>
     friend class weak_ptr;
 
-    ControlBlock<T>* m_cptr = nullptr;
-
     template <typename U, typename... Args>
-    friend shared_ptr<U> make_shared(Args&... args);
+    friend shared_ptr<T> make_shared(Args&... args);
 
     struct make_shared_t;
 
     template <typename... Args>
-    shared_ptr(make_shared_t, ControlBlock<T>* storage_ptr, Args&&... args)
+    shared_ptr(make_shared_t, ControlBlock* storage_ptr, Args&&... args)
         : m_cptr(storage_ptr)
     {
     }
@@ -85,33 +88,35 @@ private:
 public:
     shared_ptr()
         : m_count(new size_t(0))
+        , m_cptr(new ControlBlock())
     {
     }
 
     shared_ptr(T* ptr)
         : m_ptr(ptr)
         , m_count(new size_t(1))
+        , m_cptr(new ControlBlock())
     {
         if constexpr (std::is_base_of_v<enabled_shared_from_this<T>, T>) {
             m_cptr->object.cptr = *this; //??
         }
+
+        ++m_cptr->shared_count;
+        m_cptr->ptr = ptr;
     }
 
     shared_ptr(const shared_ptr& other)
-        : m_ptr(other.m_ptr)
-        , m_count(other.m_count)
+        : m_cptr(other.m_cptr)
     {
-        if (m_ptr != nullptr) {
-            ++(*m_count);
+        if (m_cptr->ptr != nullptr) {
+            ++(m_cptr->shared_count);
         }
     }
 
     shared_ptr(shared_ptr&& other)
-        : m_ptr(other.m_ptr)
-        , m_count(other.m_count)
+        : m_cptr(other.m_cptr)
     {
-        other.m_ptr = nullptr;
-        other.m_count = nullptr;
+        m_cptr = nullptr;
     }
 
     T& operator*() const
@@ -123,16 +128,13 @@ public:
     {
         return m_ptr;
     }
-    
+
     shared_ptr& operator=(const shared_ptr& other)
     {
-        m_count = other.m_count;
         m_cptr = other.m_cptr;
-        m_ptr = other.m_ptr;
-        deleter = other.deleter;
 
-        if (m_ptr != nullptr) {
-            ++(*m_count);
+        if (m_cptr->ptr != nullptr) {
+            ++m_cptr->shared_count;
         }
 
         return *this;
@@ -140,26 +142,26 @@ public:
 
     size_t use_count() const
     {
-        return *m_count;
+        return m_cptr->shared_count;
     }
 
     T* get() const
     {
-        return m_ptr;
-        // return m_cptr->object*;
+        // return m_ptr;
+        return m_cptr->ptr;
     }
 
     ~shared_ptr()
     {
-        if(m_count != nullptr && *m_count != 0) {
+        if (m_count != nullptr && *m_count != 0) {
             --*m_count;
 
             if (*m_count > 0) {
-            return;
+                return;
             }
-        }        
+        }
 
-        if(m_count == 0) {
+        if (m_count == 0) {
             delete m_count;
         }
     }
@@ -184,10 +186,10 @@ public:
 template <typename T>
 class weak_ptr {
 public:
-    shared_ptr::ControlBlock<T>* cptr = nullptr;
+    typename shared_ptr<T>::ControlBlock* cptr = nullptr;
 
     weak_ptr(const shared_ptr<T>& ptr)
-        : cptr(ptr.cptr)
+        : cptr(ptr.m_cptr)
     {
     }
 
@@ -208,22 +210,22 @@ public:
     ~weak_ptr()
     {
         --cptr->weak_count;
-         /*if (cptr->shared_count == 0 && cptr->weak_count) {
-            delete cptr->shared_count;
-            delete cptr->weak_count;
-        }*/
+        if (cptr->shared_count == 0 && cptr->weak_count) {
+            delete cptr;
+        }
     }
 };
 
 template <typename T, typename... Args>
 shared_ptr<T> make_shared(Args&&... args)
 {
-    //return aloccate_shared(std::allocator<T>(), std::forward<Args>(args)...);
-    // auto ptr = new ControlBlock<T> { 1, T(std::forward<Args>(args)...) };
-    // return shared_ptr<T>(shared_ptr::make_shared_t(), ptr);
+    // return aloccate_shared(std::allocator<T>(), std::forward<Args>(args)...);
 
-     auto ptr = new T(std::forward<Args>(args)...);
-     return shared_ptr<T>(ptr);
+    auto ptr = new typename shared_ptr<T>::ControlBlock { 1, T(std::forward<Args>(args)...) };
+    return shared_ptr<T>(shared_ptr<T>::make_shared_t(), ptr);
+
+    // auto ptr = new T(std::forward<Args>(args)...);
+    // return shared_ptr<T>(ptr);
 }
 
 template <typename T, typename Alloc, typename... Args>
@@ -249,6 +251,5 @@ public:
         return m_wptr.lock();
     }
 };
-
 
 }
