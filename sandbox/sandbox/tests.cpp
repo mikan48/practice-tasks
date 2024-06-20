@@ -133,12 +133,12 @@ void SharedPtrTests()
     assert(weak3.cptr->shared_count == 3);
     assert(!weak3.expired());
 
-    std::shared_ptr<int> sharedReference(new int(5));
-    std::cout << *sharedReference.get() << std::endl;
-    //std::cout << sharedReference.use_count() << std::endl;
-    std::shared_ptr<int> sharedReference2;
-    sharedReference2 = sharedReference;
-    std::cout << *sharedReference2.get() << std::endl;
+    //std::shared_ptr<int> sharedReference(new int(5));
+    //std::cout << *sharedReference.get() << std::endl;
+    ////std::cout << sharedReference.use_count() << std::endl;
+    //std::shared_ptr<int> sharedReference2;
+    //sharedReference2 = sharedReference;
+    //std::cout << *sharedReference2.get() << std::endl;
 }
 
 }
