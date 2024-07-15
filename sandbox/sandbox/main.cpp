@@ -126,6 +126,7 @@ void ContainersAndFunctionTest()
 int main() 
 {
 	Tests::VectorTests();
+	Tests::SharedPtrTests();
 
 	return 0;
 }
