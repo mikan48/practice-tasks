@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include "vector.h"
+#include "unique_ptr.h"
 
 namespace Tests {
 
@@ -90,6 +91,20 @@ void VectorTests()
     assert(moveVector.Empty());
     assert(moveVector.Capacity() == 0);
     assert(moveVector.Data() == nullptr);
+}
+
+void UniquePtrTests()
+{
+    Core::unique_ptr<int> p1(new int(2));
+    Core::unique_ptr<int> p2(nullptr);
+    Core::unique_ptr<int> p3;
+    assert(std::is_constructible<Core::unique_ptr<int>>::value);
+    assert(!std::is_copy_constructible<Core::unique_ptr<int>>::value);
+    assert(*p1.get() == 2);
+    p1.reset(new int(1));
+    assert(*p1.get() == 1);
+    p1.release();
+    assert(p1.get() == nullptr);
 }
 
 }

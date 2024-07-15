@@ -126,6 +126,7 @@ void ContainersAndFunctionTest()
 int main() 
 {
 	Tests::VectorTests();
+	Tests::UniquePtrTests();
 
 	return 0;
 }
