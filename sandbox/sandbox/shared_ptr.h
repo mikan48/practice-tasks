@@ -11,31 +11,6 @@ class weak_ptr;
 template <typename T>
 class shared_ptr {
 private:
-    T* m_ptr = nullptr;
-    size_t* m_count = nullptr;
-
-    struct DeleterBase {
-        virtual void operator()(void*);
-        virtual ~DeleterBase() { }
-    };
-
-    template <typename U>
-    struct DeleterDerived : public DeleterBase {
-        U deleter;
-        DeleterDerived(const U& deleter)
-            : deleter(deleter)
-        {
-        }
-
-        void operator()(void* ptr) override
-        {
-            deleter(ptr);
-        }
-    };
-
-    DeleterBase* deleter = nullptr;
-
-    //////////////////////
 
     struct BaseControlBlock {
         size_t shared_count = 0;
@@ -44,11 +19,9 @@ private:
         virtual ~BaseControlBlock() = default;
     };
 
-    template <typename Deleter = std::default_delete<T>, typename Allocator = std::allocator<T>>
+    template <typename Allocator = std::allocator<T>>
     struct ControlBlockDirect : public BaseControlBlock {
         T* object = nullptr;
-        Deleter deleter;
-        Allocator aloccator;
 
         ControlBlockDirect() = default;
 
@@ -63,11 +36,8 @@ private:
         }
     };
 
-    //template <typename Allocator = std::allocator<T>>
     struct ControlBlockMakeShared : public BaseControlBlock {
-        alignas(T) std::byte* obj[sizeof(T)]; // to do
-        //Allocator allocator;
-        // T object; // T* ptr
+        alignas(T) std::byte* obj[sizeof(T)];
 
         T* GetObject() override
         {
@@ -77,24 +47,13 @@ private:
 
     BaseControlBlock* m_cb = nullptr;
 
-    /////////////////////
-
-    // template <typename U>
-    // struct ControlBlock {
-    //    size_t shared_count = 0;
-    //    size_t weak_count = 0;
-    //    T* ptr = nullptr;
-    //};
-
-    // ControlBlock* m_cptr = nullptr;
-
     template <typename U>
     friend class weak_ptr;
 
     struct make_shared_t { };
 
     template <typename U, typename Alloc, typename... Args>
-    friend shared_ptr<U> aloccate_shared(Alloc& alloc, Args&&... args);
+    friend shared_ptr<U> allocate_shared(Alloc& alloc, Args&&... args);
 
     template <typename U, typename... Args>
     friend shared_ptr<U> make_shared(Args&... args);
@@ -113,18 +72,15 @@ private:
 
 public:
     shared_ptr()
-        : m_count(new size_t(0))
-        , m_cb(new ControlBlockDirect())
+        : m_cb(new ControlBlockDirect())
     {
     }
 
     shared_ptr(T* ptr)
-        : m_ptr(ptr)
-        , m_count(new size_t(1))
-        , m_cb(new ControlBlockDirect(ptr))
+        : m_cb(new ControlBlockDirect(ptr))
     {
         if constexpr (std::is_base_of_v<enabled_shared_from_this<T>, T>) {
-            m_cb->GetObject().cptr = *this; //??
+            m_cb->GetObject().cptr = *this; 
         }
 
         ++m_cb->shared_count;
@@ -133,8 +89,6 @@ public:
     shared_ptr(const shared_ptr& other)
         : m_cb(other.m_cb)
     {
-        // m_cb->SetObject = other.m_cb->GetObject();
-
         if (m_cb->GetObject() != nullptr) {
             ++(m_cb->shared_count);
         }
@@ -146,17 +100,15 @@ public:
         m_cb = nullptr;
     }
 
-    ///
     T& operator*() const
     {
-        return *m_ptr;
+        return *m_cb->GetObject();
     }
 
     T* operator->() const
     {
-        return m_ptr;
+        return m_cb->GetObject();
     }
-    ///
 
     shared_ptr& operator=(const shared_ptr& other)
     {
@@ -176,26 +128,8 @@ public:
 
     T* get() const
     {
-        // return m_ptr;
-        // T obj = static_cast<T>(m_cb->GetObject()[0]);
-
         return m_cb->GetObject();
     }
-
-    //~shared_ptr()
-    //{
-    //    if (m_count != nullptr && *m_count != 0) {
-    //        --*m_count;
-
-    //        if (*m_count > 0) {
-    //            return;
-    //        }
-    //    }
-
-    //    if (m_count == 0) {
-    //        delete m_count;
-    //    }
-    //}
 
     ~shared_ptr()
     {
@@ -204,13 +138,6 @@ public:
         if (m_cb->shared_count > 0) {
             return;
         }
-
-        if (m_cb->weak_count == 0) {
-            //delete m_cb;
-            return;
-        }
-
-        // cptr->object.~T();
     }
 };
 
@@ -244,6 +171,7 @@ public:
     ~weak_ptr()
     {
         --cptr->weak_count;
+
         if (this->expired() && cptr->weak_count == 0) {
             delete cptr;
         }
@@ -266,12 +194,10 @@ public:
 };
 
 template <typename T, typename Alloc = std::allocator<T>, typename... Args>
-shared_ptr<T> aloccate_shared(Alloc& alloc, Args&&... args)
+shared_ptr<T> allocate_shared(Alloc& alloc, Args&&... args)
 {
     auto cb = new typename shared_ptr<T>::ControlBlockMakeShared();
     std::allocator_traits<Alloc>::construct(alloc, cb->GetObject(), T(args...));
-
-    //new (cb->GetObject()) T(args...);
 
     shared_ptr<T> newShared(cb);
 
@@ -283,13 +209,7 @@ shared_ptr<T> make_shared(Args&&... args)
 {
     auto alloc = std::allocator<T>();
 
-    return aloccate_shared<T>(alloc, std::forward<Args>(args)...);
-
-    // auto ptr = new typename shared_ptr<T>::ControlBlock { 1, T(std::forward<Args>(args)...) };
-    // return shared_ptr<T>(shared_ptr<T>::make_shared_t(), ptr);
-
-    // auto ptr = new T(std::forward<Args>(args)...);
-    // return shared_ptr<T>(ptr);
+    return allocate_shared<T>(alloc, std::forward<Args>(args)...);
 }
 
 }
